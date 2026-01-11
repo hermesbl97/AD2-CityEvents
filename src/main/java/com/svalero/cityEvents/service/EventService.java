@@ -1,0 +1,59 @@
+package com.svalero.cityEvents.service;
+
+import com.svalero.cityEvents.domain.Event;
+import com.svalero.cityEvents.exception.EventNotFoundException;
+import com.svalero.cityEvents.repository.EventRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class EventService {
+
+    @Autowired
+    private EventRepository eventRepository;
+    @Autowired
+    private ModelMapper modelMapper;
+
+    public Event add(Event event){
+        return eventRepository.save(event);
+    }
+
+    public void delete(long id) throws EventNotFoundException {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(EventNotFoundException::new);
+
+        eventRepository.delete(event);
+    }
+
+    public List<Event> findAll() {
+        List<Event> allEvents = eventRepository.findAll();
+        return allEvents;
+    }
+
+    public List<Event> findByCategory(String category) {
+        List<Event> events = eventRepository.findByCategory(category);
+        return events;
+    }
+
+    public Event findById(long id) throws EventNotFoundException {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(EventNotFoundException::new);
+
+        return event;
+    }
+
+    public Event modify(long id, Event event) throws EventNotFoundException {
+        Event eventExisting = eventRepository.findById(id)
+                .orElseThrow(EventNotFoundException::new);
+
+        modelMapper.map(event, eventExisting);
+        eventExisting.setId(id);
+
+        return eventRepository.save(eventExisting);
+    }
+
+
+}
