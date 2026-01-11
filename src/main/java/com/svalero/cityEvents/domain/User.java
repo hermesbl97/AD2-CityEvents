@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -25,4 +26,7 @@ public class User {
     private LocalDate birthDate;
     @Column
     private boolean active;
+
+    @OneToMany(mappedBy = "user")
+    private List<Review> reviews;
 }
