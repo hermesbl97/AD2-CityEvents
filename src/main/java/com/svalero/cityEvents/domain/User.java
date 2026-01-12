@@ -25,7 +25,7 @@ public class User {
     @NotNull(message = "Name is mandatory")
     private String name;
     @Column
-    @NotNull
+    @NotNull(message = "The surname is mandatory")
     private String surname;
     @Column(name = "birth_date")
     private LocalDate birthDate;

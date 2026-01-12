@@ -18,7 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpServerErrorException;
 
+import java.rmi.ServerError;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,4 +100,11 @@ public class ReviewController {
         ErrorResponse errorResponse = ErrorResponse.validationError(errors);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+        ErrorResponse errorResponse = ErrorResponse.internalServerError();
+        return new ResponseEntity<>(errorResponse,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

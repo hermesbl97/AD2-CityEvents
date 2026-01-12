@@ -87,4 +87,10 @@ public class EventController {
         ErrorResponse errorResponse = ErrorResponse.validationError(errors);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+        ErrorResponse errorResponse = ErrorResponse.internalServerError();
+        return new ResponseEntity<>(errorResponse,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

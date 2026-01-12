@@ -35,9 +35,9 @@ public class ErrorResponse {
     public static ErrorResponse validationError(Map<String, String> errors) {
         return new ErrorResponse(400,"bad-request", "Validation error", errors);
     }
-    public static ErrorResponse internalServerError(Map<String, String> errors) {
-            return new ErrorResponse(500,"internal-server-error", "Internal Server error", errors);
-        }
+    public static ErrorResponse internalServerError() {
+        return new ErrorResponse(500,"internal-server-error","There is a bug in the backend", new HashMap<>());
+    }
 
 }
 
