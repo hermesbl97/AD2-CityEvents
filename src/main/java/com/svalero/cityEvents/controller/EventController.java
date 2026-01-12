@@ -5,14 +5,19 @@ import com.svalero.cityEvents.dto.EventOutDto;
 import com.svalero.cityEvents.exception.ErrorResponse;
 import com.svalero.cityEvents.exception.EventNotFoundException;
 import com.svalero.cityEvents.service.EventService;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class EventController {
@@ -46,7 +51,7 @@ public class EventController {
     }
 
     @PostMapping("/events")
-    public ResponseEntity<Event> addEvent(@RequestBody Event event) {
+    public ResponseEntity<Event> addEvent(@Valid @RequestBody Event event) {
         Event newEvent = eventService.add(event);
         return new ResponseEntity<>(newEvent, HttpStatus.CREATED);
     }
@@ -66,7 +71,26 @@ public class EventController {
 
     @ExceptionHandler(EventNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(EventNotFoundException enfe) {
-        ErrorResponse errorResponse = new ErrorResponse(404,"not-found","The event does not exist");
+        ErrorResponse errorResponse = ErrorResponse.notFound("The event does not exist");
         return new ResponseEntity<>(errorResponse,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleException(MethodArgumentNotValidException manve) {
+        Map<String, String> errors = new HashMap<>();
+        //extraemos los errores de la excepción del fallo
+        manve.getBindingResult().getAllErrors().forEach(error -> { //para cada error rellenamos el nombre del campo
+            String fieldName = ((FieldError) error).getField();
+            String message = error.getDefaultMessage();
+            errors.put(fieldName,message); //asociamos cada error con su mensaje
+        });
+        ErrorResponse errorResponse = ErrorResponse.validationError(errors);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+        ErrorResponse errorResponse = ErrorResponse.internalServerError();
+        return new ResponseEntity<>(errorResponse,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

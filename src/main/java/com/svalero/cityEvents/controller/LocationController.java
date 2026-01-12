@@ -5,15 +5,19 @@ import com.svalero.cityEvents.exception.ErrorResponse;
 import com.svalero.cityEvents.exception.LocationNotFoundException;
 import com.svalero.cityEvents.repository.LocationRepository;
 import com.svalero.cityEvents.service.LocationService;
+import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.parser.Entity;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class LocationController {
@@ -41,7 +45,7 @@ public class LocationController {
     }
 
     @PostMapping("/locations")
-    public ResponseEntity<Location> addLocation(@RequestBody Location location) { //me pasan el juego que quiero añadir en el body de la llamada
+    public ResponseEntity<Location> addLocation(@Valid @RequestBody Location location) { //me pasan el juego que quiero añadir en el body de la llamada
         Location newLocation = locationService.add(location);
         return new ResponseEntity<>(newLocation, HttpStatus.CREATED); //nos devuelve el juego posteado cuando se crea1
     }
@@ -61,7 +65,26 @@ public class LocationController {
 
     @ExceptionHandler(LocationNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(LocationNotFoundException lnfe) {
-        ErrorResponse errorResponse = new ErrorResponse(404, "not-found", "The game does not exist");
+        ErrorResponse errorResponse = ErrorResponse.generalError(404, "not-found", "The game does not exist");
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleException(MethodArgumentNotValidException manve) {
+        Map<String, String> errors = new HashMap<>();
+        //extraemos los errores de la excepción del fallo
+        manve.getBindingResult().getAllErrors().forEach(error -> { //para cada error rellenamos el nombre del campo
+            String fieldName = ((FieldError) error).getField();
+            String message = error.getDefaultMessage();
+            errors.put(fieldName,message); //asociamos cada error con su mensaje
+        });
+        ErrorResponse errorResponse = ErrorResponse.validationError(errors);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+        ErrorResponse errorResponse = ErrorResponse.internalServerError();
+        return new ResponseEntity<>(errorResponse,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

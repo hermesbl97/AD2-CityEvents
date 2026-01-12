@@ -1,6 +1,7 @@
 package com.svalero.cityEvents.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,12 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)   //con esto le decimos que es un valor autonumerico para que se generen los valores de id por sí mismos
     private long id;
     @Column
+    @NotNull(message = "Name is mandatory")
     private String name;
     @Column
     private String description;
     @Column
+    @NotNull(message = "Category is mandatory")
     private String category;
     @Column
     private String adress;
