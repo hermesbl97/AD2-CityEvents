@@ -28,6 +28,7 @@ public class Event {
     @Column(name = "event_name")
     private LocalDate eventDate;
     @Column
+    @NotNull(message = "Category is mandatory")
     private String category;
     @Column
     @Min(value = 0, message = "The price must be a positive number")

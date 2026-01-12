@@ -10,13 +10,18 @@ import com.svalero.cityEvents.service.EventService;
 import com.svalero.cityEvents.service.LocationService;
 import com.svalero.cityEvents.service.ReviewService;
 import com.svalero.cityEvents.service.UserService;
+import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ReviewController {
@@ -48,7 +53,7 @@ public class ReviewController {
     }
 
     @PostMapping("/reviews")
-    public ResponseEntity<Review> addReview(@RequestBody ReviewInDto reviewInDto) throws EventNotFoundException, UserNotFoundException {
+    public ResponseEntity<Review> addReview(@Valid @RequestBody ReviewInDto reviewInDto) throws EventNotFoundException, UserNotFoundException {
         Event event = eventService.findById(reviewInDto.getEventId());
         User user = userService.findUserById(reviewInDto.getUserId());
 
@@ -71,7 +76,26 @@ public class ReviewController {
 
     @ExceptionHandler(ReviewNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(ReviewNotFoundException rnfe) {
-        ErrorResponse errorResponse = new ErrorResponse(404, "not-found","The review does not exist");
+        ErrorResponse errorResponse = ErrorResponse.notFound("The review does not exist");
         return new ResponseEntity<>(errorResponse,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleException(UserNotFoundException unfe) {
+        ErrorResponse errorResponse = ErrorResponse.notFound("The user does not exist");
+        return new ResponseEntity<>(errorResponse,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleException(MethodArgumentNotValidException manve) {
+        Map<String, String> errors = new HashMap<>();
+        //extraemos los errores de la excepción del fallo
+        manve.getBindingResult().getAllErrors().forEach(error -> { //para cada error rellenamos el nombre del campo
+            String fieldName = ((FieldError) error).getField();
+            String message = error.getDefaultMessage();
+            errors.put(fieldName,message); //asociamos cada error con su mensaje
+        });
+        ErrorResponse errorResponse = ErrorResponse.validationError(errors);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

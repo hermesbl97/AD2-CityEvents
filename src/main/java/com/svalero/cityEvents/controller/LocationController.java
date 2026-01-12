@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import javax.swing.text.html.parser.Entity;
 import java.util.List;
 
 @RestController
@@ -61,7 +59,7 @@ public class LocationController {
 
     @ExceptionHandler(LocationNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(LocationNotFoundException lnfe) {
-        ErrorResponse errorResponse = new ErrorResponse(404, "not-found", "The game does not exist");
+        ErrorResponse errorResponse = ErrorResponse.generalError(404, "not-found", "The game does not exist");
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }

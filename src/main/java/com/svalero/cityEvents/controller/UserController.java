@@ -55,7 +55,7 @@ public class UserController {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(UserNotFoundException unfe) {
-        ErrorResponse errorResponse = new ErrorResponse(404,"not-found", "The user does not exist");
+        ErrorResponse errorResponse = ErrorResponse.notFound("The user does not exist");
         return new ResponseEntity<>(errorResponse,HttpStatus.NOT_FOUND);
     }
 }
