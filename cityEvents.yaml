@@ -11,11 +11,17 @@ paths:
       summary: Devuelve lista de eventos
       description: | 
         Nos devuelve una lista completa con todos los elementos. 
-        Se puede realizar búsqueda tanto de la lista completa como realizar un filtrado por categoría.
+        Se puede realizar búsqueda tanto de la lista completa como realizar un filtrado tanto por categoría evento como por nombre de la localización donde tiene lugar el evento.
       parameters:
         - name: category
           in: query
-          description: Filtra por categoría del juego
+          description: Filtra por categoría del evento
+          required: false
+          schema:
+            type: string
+        - name: localName
+          in: query
+          description: Filtra por nombre de la localización del evento
           required: false
           schema:
             type: string
@@ -156,11 +162,11 @@ paths:
       summary: Devuelve lista de localizaciones
       description: |
         Nos devuelve una lista completa con todas las localizaciones en las que se celebran eventos.
-        Se puede realizar búsqueda tanto de la lista completa como realizar un filtrado por categoría.
+        Se puede realizar búsqueda tanto de la lista completa como realizar un filtrado tanto por categoría evento como por nombre de la localización donde tiene lugar el evento.
       parameters:
         - name: category
           in: query
-          description: Filtra por categoría del juego
+          description: Filtra por categoría de la localización.
           required: false
           schema:
             type: string
@@ -172,7 +178,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/EventOutDto'
+                  $ref: '#/components/schemas/LocationOutDto'
         '500':
           description: Internal server error
           content:
@@ -180,21 +186,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
     post:
-      summary: Registrar evento
-      description: Nos permite registrar un nuevo evento en nuestra base de datos.
+      summary: Registrar localización
+      description: Permite registrar una localización en nuestra base de datos.
       requestBody:
-        description: Los datos del nuevo evento
+        description: Los datos de la nueva localización
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EventInDto'
+              $ref: '#/components/schemas/LocationInDto'
       responses:
         '201':
-          description: Evento registrado
+          description: Localización registrado
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Event'
+                $ref: '#/components/schemas/Location'
         '400':
           description: Bad request
           content:
@@ -207,7 +213,95 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-
+  /locations/{id}:
+    get:
+      summary: Devuelve vista de una localización
+      description: Devuelve la vista mucho más detallada de una localización en concreto. Búsqueda filtrada por Id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    put:
+      summary: Editar una localización
+      description: Nos permite modificar, por "Id", los datos de una localización en nuestra base de datos.
+      requestBody:
+        description: Los datos de la nueva localización. Son los que sobreescribiremos sobre la antigua.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationInDto'
+      responses:
+        '200':
+          description: Localización registrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not Found Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    delete:
+      summary: Borrar localización
+      description: Permite eliminar una localización, por "Id", de la base de datos.
+      responses:
+        '204':
+          description: Localización eliminada de la base de datos. (No devuelve ningún dato).
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not Found Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
 components:
   schemas:
     Event:
@@ -285,6 +379,82 @@ components:
         eventDate: 2025-02-04
         category: Concierto
         price: 30
+    LocationOutDto:
+      type: object
+      properties:
+        id:
+          type: number
+          format: int64
+          description: Identificador de la localización
+        name:
+          type: string
+          description: Nombre de la localización
+        description:
+          type: string
+          description: Descripción de la localización
+        category:
+          type: string
+          description: Tipo de evento
+        disabledAccess:
+          type: boolean
+          description: Indica si tiene acceso para persona discapacitadas
+      example:
+        id: 1
+        name: Teatro Principal
+        description: Teatro más importante de la ciudad de Zaragoza.
+        category: Teatro
+        disabledAcces: true
+    LocationInDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nombre de la localización
+        description:
+          type: string
+          description: Descripción de la localización
+        category:
+          type: string
+          description: Tipo de evento
+        streetLocated:
+          type: string
+          description: Calle en la que se encuentra situada la localización
+        postalCode:
+          type: number
+          format: double
+          description: Número de código postal de la localización
+        registerDate:
+          type: string
+          format: date
+          description: Fecha en la que se registra la localización nueva
+        disabledAccess:
+          type: boolean
+          description: Indica si tiene acceso para persona discapacitadas
+      example:
+        name: Teatro Principal
+        description: Teatro más importante de la ciudad de Zaragoza.
+        category: Teatro
+        streetLocated: Coso
+        postalCode: 5001
+        registerDate: 2026-01-13
+        disabledAcces: true
+    Location:
+      allOf:
+        - $ref: '#/components/schemas/LocationInDto'
+      type: object
+      properties:
+        id:
+          type: number
+          format: int64
+          description: Identificador del evento
+      example:
+        name: Teatro Principal
+        description: Teatro más importante de la ciudad de Zaragoza.
+        category: Teatro
+        streetLocated: Coso
+        postalCode: 5001
+        registerDate: 2026-01-13
+        disabledAcces: true
     ErrorResponse:
       type: object
       properties:
