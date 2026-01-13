@@ -4,7 +4,9 @@ import com.svalero.cityEvents.domain.Event;
 import com.svalero.cityEvents.domain.Location;
 import com.svalero.cityEvents.domain.Review;
 import com.svalero.cityEvents.domain.User;
+import com.svalero.cityEvents.dto.EventOutDto;
 import com.svalero.cityEvents.dto.ReviewInDto;
+import com.svalero.cityEvents.dto.ReviewOutDto;
 import com.svalero.cityEvents.exception.*;
 import com.svalero.cityEvents.service.EventService;
 import com.svalero.cityEvents.service.LocationService;
@@ -12,6 +14,9 @@ import com.svalero.cityEvents.service.ReviewService;
 import com.svalero.cityEvents.service.UserService;
 import jakarta.validation.Valid;
 import org.apache.coyote.Response;
+import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,18 +39,27 @@ public class ReviewController {
     private EventService eventService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @GetMapping("/reviews")
-    public ResponseEntity<List<Review>> getAll(@RequestParam(value = "username", defaultValue = "") String username) {
+    public ResponseEntity<List<ReviewOutDto>> getAll(
+            @RequestParam(value = "username", required = false) String username,
+            @RequestParam(value = "eventName", required = false) String eventName) {
+
         List<Review> allReviews;
 
-        if (!username.isEmpty()) {
-            allReviews = reviewService.findByUsername(username);
+        if (username != null && !username.isEmpty()) {
+         allReviews = reviewService.findByUsername(username);
+        } else if (eventName != null && !eventName.isEmpty()) {
+            allReviews = reviewService.findByEventName(eventName);
         } else {
             allReviews = reviewService.findAll();
         }
 
-        return ResponseEntity.ok(allReviews);
+        List<ReviewOutDto> reviewsOutDto = modelMapper.map(allReviews, new TypeToken<List<ReviewOutDto>>() {}.getType());
+
+        return ResponseEntity.ok(reviewsOutDto);
     }
 
     @GetMapping("/reviews/{id}")

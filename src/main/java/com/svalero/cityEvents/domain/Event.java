@@ -32,6 +32,8 @@ public class Event {
     private int capacity;
     @Column
     private float price;
+    @Column
+    private boolean availability=true;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE) //esto permite borrar en cascada los elementos en las reviews
     @JsonBackReference
@@ -40,4 +42,9 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;
+
+//    @ManyToMany
+//    @JoinTable(name = "event_artists", joinColumns = @JoinColumn(name = "event_id"),
+//            inverseJoinColumns = @JoinColumn(name = "artist_id"))
+//    private List<Artist> artists;
 }

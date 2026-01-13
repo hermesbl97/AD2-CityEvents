@@ -23,4 +23,5 @@ public class EventInDto {
     @Min(value = 0, message = "The price must be a positive number")
     private float price;
     private long locationId;
+//    private long artistId;
 }
