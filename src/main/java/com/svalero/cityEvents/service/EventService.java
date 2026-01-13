@@ -44,6 +44,10 @@ public class EventService {
         return events;
     }
 
+    public List<Event> findByLocationName(String locationName) {
+        return eventRepository.findByLocation_Name(locationName);
+    }
+
     public Event findById(long id) throws EventNotFoundException {
         Event event = eventRepository.findById(id)
                 .orElseThrow(EventNotFoundException::new);

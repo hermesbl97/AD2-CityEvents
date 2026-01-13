@@ -34,11 +34,16 @@ public class EventController {
     private ModelMapper modelMapper;
 
     @GetMapping("/events")
-    public ResponseEntity<List<EventOutDto>> getAll(@RequestParam(value = "category", defaultValue = "") String category) {
+    public ResponseEntity<List<EventOutDto>> getAll(
+            @RequestParam(value = "category", required = false) String category, //con required lo hacemos opcional
+            @RequestParam(value = "locationName", required = false) String locationName) {
+
         List<Event> allEvents;
 
-        if (!category.isEmpty()){
+        if (category != null && !category.isEmpty()){
             allEvents = eventService.findByCategory(category);
+        } else if (locationName != null && !locationName.isEmpty()){
+            allEvents = eventService.findByLocationName(locationName);
         } else {
             allEvents = eventService.findAll();
         }
