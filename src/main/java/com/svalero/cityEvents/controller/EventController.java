@@ -1,10 +1,14 @@
 package com.svalero.cityEvents.controller;
 
 import com.svalero.cityEvents.domain.Event;
+import com.svalero.cityEvents.domain.Location;
+import com.svalero.cityEvents.dto.EventInDto;
 import com.svalero.cityEvents.dto.EventOutDto;
 import com.svalero.cityEvents.exception.ErrorResponse;
 import com.svalero.cityEvents.exception.EventNotFoundException;
+import com.svalero.cityEvents.exception.LocationNotFoundException;
 import com.svalero.cityEvents.service.EventService;
+import com.svalero.cityEvents.service.LocationService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -24,6 +28,8 @@ public class EventController {
 
     @Autowired
     private EventService eventService;
+    @Autowired
+    private LocationService locationService;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -51,8 +57,9 @@ public class EventController {
     }
 
     @PostMapping("/events")
-    public ResponseEntity<Event> addEvent(@Valid @RequestBody Event event) {
-        Event newEvent = eventService.add(event);
+    public ResponseEntity<Event> addEvent(@Valid @RequestBody EventInDto eventInDto) throws LocationNotFoundException {
+        Location location = locationService.findById(eventInDto.getLocationId());
+        Event newEvent = eventService.add(location, eventInDto);
         return new ResponseEntity<>(newEvent, HttpStatus.CREATED);
     }
 

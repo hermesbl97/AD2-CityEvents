@@ -1,5 +1,6 @@
 package com.svalero.cityEvents.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -38,4 +39,7 @@ public class Location {
     @Column(name = "disabled_access")
     private boolean disabledAccess;
 
+    @OneToMany(mappedBy = "location", cascade = CascadeType.REMOVE)
+    @JsonBackReference
+    private List<Event> events; //una localización puede tener muchos eventos
 }

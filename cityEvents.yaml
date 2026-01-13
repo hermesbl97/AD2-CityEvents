@@ -151,6 +151,63 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
+  /locations:
+    get:
+      summary: Devuelve lista de localizaciones
+      description: |
+        Nos devuelve una lista completa con todas las localizaciones en las que se celebran eventos.
+        Se puede realizar búsqueda tanto de la lista completa como realizar un filtrado por categoría.
+      parameters:
+        - name: category
+          in: query
+          description: Filtra por categoría del juego
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventOutDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    post:
+      summary: Registrar evento
+      description: Nos permite registrar un nuevo evento en nuestra base de datos.
+      requestBody:
+        description: Los datos del nuevo evento
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventInDto'
+      responses:
+        '201':
+          description: Evento registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
 components:
   schemas:
     Event:
