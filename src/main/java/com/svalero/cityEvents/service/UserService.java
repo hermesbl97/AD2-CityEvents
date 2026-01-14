@@ -1,6 +1,7 @@
 package com.svalero.cityEvents.service;
 
 import com.svalero.cityEvents.domain.User;
+import com.svalero.cityEvents.dto.UserInDto;
 import com.svalero.cityEvents.exception.UserNotFoundException;
 import com.svalero.cityEvents.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -18,7 +19,9 @@ public class UserService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public User add(User user) {
+    public User add(UserInDto userInDto) {
+        User user = new User();
+        modelMapper.map(userInDto,user);
         return userRepository.save(user);
     }
 

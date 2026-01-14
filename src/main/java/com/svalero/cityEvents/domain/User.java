@@ -22,22 +22,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column
-    @NotNull(message = "Username is mandatory")
     private String username;
     @Column
-    @NotNull(message = "Name is mandatory")
     private String name;
     @Column
-    @NotNull(message = "The surname is mandatory")
     private String surname;
     @Column(name = "birth_date")
     private LocalDate birthDate;
     @Column(name = "telephone_number")
-    @Min(value = 600000000, message = "The telephone must have this structure 6XX XXX XXX")
-    @Max(value = 699999999, message = "The telephone must have this structure 6XX XXX XXX")
     private int telephoneNumber;
     @Column
-    private boolean active;
+    private boolean active=true;
 
     @OneToMany(mappedBy = "user")
     @JsonBackReference

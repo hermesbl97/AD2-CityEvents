@@ -1,6 +1,7 @@
 package com.svalero.cityEvents.controller;
 
 import com.svalero.cityEvents.domain.User;
+import com.svalero.cityEvents.dto.UserInDto;
 import com.svalero.cityEvents.exception.ErrorResponse;
 import com.svalero.cityEvents.exception.UserNotFoundException;
 import com.svalero.cityEvents.service.UserService;
@@ -48,8 +49,8 @@ public class UserController {
     }
 
     @PostMapping("/usuarios")
-    public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
-        User newUser = userService.add(user);
+    public ResponseEntity<User> addUser(@Valid @RequestBody UserInDto userInDto) {
+        User newUser = userService.add(userInDto);
         return new  ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 

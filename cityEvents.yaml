@@ -604,7 +604,157 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-
+  /users:
+    get:
+      summary: Lista de usuarios
+      description: |
+        Nos devuelve una lista completa con todos los usuarios. 
+        Se puede realizar búsqueda tanto de la lista completa como realizar un filtrado tanto por nombre del usuario como por los usuarios nacidos antes de una fecha facilitada.
+      parameters:
+        - name: name
+          in: query
+          description: Filtra por nombre de usuarios
+          required: false
+          schema:
+            type: string
+        - name: date
+          in: query
+          description: Filtra por los usuarios nacidos antes de la fecha por la que se filtra
+          required: false
+          schema:
+            type: date
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    post:
+      summary: Registrar usuario
+      description: Nos permite registrar un nuevo usuario en nuestra base de datos.
+      requestBody:
+        description: Los datos del nuevo usuario
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInDto'
+      responses:
+        '201':
+          description: Usuario registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /users/{id}:
+    get:
+      summary: Vista de un usuario
+      description: Devuelve la vista mucho más detallada de un usuario en concreto. Búsqueda filtrada por Id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    put:
+      summary: Editar un user
+      description: Nos permite modificar, por "Id", los datos de un usuario en nuestra base de datos.
+      requestBody:
+        description: Los datos del nuevo usuario. Son los que sobreescribiremos sobre el antiguo.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInDto'
+      responses:
+        '200':
+          description: Usuario registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not Found Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    delete:
+      summary: Borrar usuario
+      description: Permite eliminar un usuario, por "Id", de la base de datos.
+      responses:
+        '204':
+          description: Usuario eliminado de la base de datos. (No devuelve ningún dato).
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not Found Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
 components:
   schemas:
     Event:
@@ -932,3 +1082,50 @@ components:
         code: 404
         message: Not Found Error
         title: not-found
+    User:
+      allOf:
+        - $ref: '#/components/schemas/UserInDto'
+      type: object
+      properties:
+        id:
+          type: number
+          format: int64
+          description: Identificador del usuario
+        active:
+          type: boolean
+          default: true
+          description: Identificado si el usuario está activo.
+      example:
+        id: 1
+        username: hermes_user
+        name: Hermes
+        surname: Barriga
+        birthDate: 1997-08-09
+        telephoneNumber: 613254894
+        active: true
+    UserInDto:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Nombre del usuario
+        name:
+          type: string
+          description: Nombre de la persona que maneja el usuario
+        surname:
+          type: string
+          description: Apellido de la persona que maneja el usuario
+        birthDate:
+          type: string
+          format: date
+          description: Fecha de nacimiento del usuario
+        telephoneNumber:
+          type: number
+          format: double
+          description: Número de teléfono del usuario
+      example:
+        username: hermes_user
+        name: Hermes
+        surname: Barriga
+        birthDate: 1997-08-09
+        telephoneNumber: 613254894
