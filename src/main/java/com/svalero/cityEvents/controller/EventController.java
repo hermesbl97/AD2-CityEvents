@@ -1,10 +1,16 @@
 package com.svalero.cityEvents.controller;
 
+import com.svalero.cityEvents.domain.Artist;
 import com.svalero.cityEvents.domain.Event;
+import com.svalero.cityEvents.domain.Location;
+import com.svalero.cityEvents.dto.EventInDto;
 import com.svalero.cityEvents.dto.EventOutDto;
 import com.svalero.cityEvents.exception.ErrorResponse;
 import com.svalero.cityEvents.exception.EventNotFoundException;
+import com.svalero.cityEvents.exception.LocationNotFoundException;
+import com.svalero.cityEvents.service.ArtistService;
 import com.svalero.cityEvents.service.EventService;
+import com.svalero.cityEvents.service.LocationService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -25,21 +31,29 @@ public class EventController {
     @Autowired
     private EventService eventService;
     @Autowired
+    private LocationService locationService;
+    @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private ArtistService artistService;
 
     @GetMapping("/events")
-    public ResponseEntity<List<EventOutDto>> getAll(@RequestParam(value = "category", defaultValue = "") String category) {
+    public ResponseEntity<List<EventOutDto>> getAll(
+            @RequestParam(value = "category", required = false) String category, //con required lo hacemos opcional
+            @RequestParam(value = "locationName", required = false) String locationName) {
+
         List<Event> allEvents;
 
-        if (!category.isEmpty()){
+        if (category != null && !category.isEmpty()){
             allEvents = eventService.findByCategory(category);
+        } else if (locationName != null && !locationName.isEmpty()){
+            allEvents = eventService.findByLocationName(locationName);
         } else {
             allEvents = eventService.findAll();
         }
 
         //Le decimos que nos mapee la lista de juegos a una lista con el objeto Dto que queremos mostrar. Y que mapee campo a campo los que coincidan
         List<EventOutDto> eventsOutDto = modelMapper.map(allEvents, new TypeToken<List<EventOutDto>>() {}.getType());
-
 
         return ResponseEntity.ok(eventsOutDto);
     }
@@ -51,8 +65,15 @@ public class EventController {
     }
 
     @PostMapping("/events")
-    public ResponseEntity<Event> addEvent(@Valid @RequestBody Event event) {
-        Event newEvent = eventService.add(event);
+    public ResponseEntity<Event> addEvent(@Valid @RequestBody EventInDto eventInDto) throws LocationNotFoundException {
+        //Buscamos la localización
+        Location location = locationService.findById(eventInDto.getLocationId());
+
+        //Buscamos los artistas
+        List<Artist> artists = artistService.findAllArtistsById(eventInDto.getArtistsIds());
+
+        Event newEvent = eventService.add(location, eventInDto, artists);
+
         return new ResponseEntity<>(newEvent, HttpStatus.CREATED);
     }
 
@@ -73,6 +94,12 @@ public class EventController {
     public ResponseEntity<ErrorResponse> handleException(EventNotFoundException enfe) {
         ErrorResponse errorResponse = ErrorResponse.notFound("The event does not exist");
         return new ResponseEntity<>(errorResponse,HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(LocationNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleException(LocationNotFoundException lnfe) {
+        ErrorResponse errorResponse = ErrorResponse.generalError(404, "not-found", "The event does not exist");
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -1,6 +1,9 @@
 package com.svalero.cityEvents.service;
 
+import com.svalero.cityEvents.domain.Artist;
 import com.svalero.cityEvents.domain.Event;
+import com.svalero.cityEvents.domain.Location;
+import com.svalero.cityEvents.dto.EventInDto;
 import com.svalero.cityEvents.exception.EventNotFoundException;
 import com.svalero.cityEvents.repository.EventRepository;
 import org.modelmapper.ModelMapper;
@@ -17,7 +20,12 @@ public class EventService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public Event add(Event event){
+    public Event add(Location location , EventInDto eventInDto, List<Artist> artists){
+        Event event = new Event(); //creamos un evento con lo que recibimos
+        event.setLocation(location);
+        event.setArtists(artists);
+
+        modelMapper.map(eventInDto, event);
         return eventRepository.save(event);
     }
 
@@ -36,6 +44,10 @@ public class EventService {
     public List<Event> findByCategory(String category) {
         List<Event> events = eventRepository.findByCategory(category);
         return events;
+    }
+
+    public List<Event> findByLocationName(String locationName) {
+        return eventRepository.findByLocation_Name(locationName);
     }
 
     public Event findById(long id) throws EventNotFoundException {

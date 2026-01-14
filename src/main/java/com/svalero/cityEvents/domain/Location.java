@@ -1,6 +1,9 @@
 package com.svalero.cityEvents.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,11 +28,18 @@ public class Location {
     @Column
     @NotNull(message = "Category is mandatory")
     private String category;
-    @Column
-    private String adress;
+    @Column(name = "street_located")
+    private String streetLocated;
+    @Column(name = "postal_code")
+    @Min(50001)
+    @Max(50019)
+    private int postalCode;
     @Column(name = "register_date")
     private LocalDate registerDate;
-    @Column
-    private boolean accesible;
+    @Column(name = "disabled_access")
+    private boolean disabledAccess;
 
+    @OneToMany(mappedBy = "location", cascade = CascadeType.REMOVE)
+    @JsonBackReference
+    private List<Event> events; //una localización puede tener muchos eventos
 }

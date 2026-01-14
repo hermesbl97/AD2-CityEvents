@@ -2,39 +2,47 @@ package com.svalero.cityEvents.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.print.attribute.standard.MediaSize;
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "usuarios")
-public class User {
+@Entity(name = "artists")
+public class Artist {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column
-    private String username;
-    @Column
+    @NotNull(message = "Name is mandatory")
     private String name;
     @Column
+    @NotNull(message = "Surname is mandatory")
     private String surname;
+    @Column
+    @NotNull(message = "Genre is mandatory")
+    private String genre;
     @Column(name = "birth_date")
     private LocalDate birthDate;
-    @Column(name = "telephone_number")
-    private int telephoneNumber;
     @Column
-    private boolean active=true;
+    @NotNull(message = "Type is mandatory")
+    private String type;
+    @Column
+    @Min(value = 0, message = "This feature must be a positive number")
+    private int followers;
+    @Column
+    private float height;
+    @Column
+    private boolean active;
 
-    @OneToMany(mappedBy = "user")
+    @ManyToMany(mappedBy = "artists")
     @JsonBackReference
-    private List<Review> reviews;
+    private List<Event> events;
 }

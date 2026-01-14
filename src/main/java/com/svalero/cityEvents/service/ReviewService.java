@@ -47,6 +47,10 @@ public class ReviewService {
         return reviews;
     }
 
+    public List<Review> findByEventName(String eventName) {
+        return reviewRepository.findByEvent_Name(eventName);
+    }
+
     public Review getReviewById(long id) throws ReviewNotFoundException {
         Review review = reviewRepository.findById(id)
                 .orElseThrow(ReviewNotFoundException::new);

@@ -19,7 +19,7 @@ public class ReviewInDto { //los datos facilitados al registrar una review
     private boolean recommend;
     @Min(value = 1, message = "The rate must be at least 1")
     @Max(value = 5, message = "The rate can not be over 5 ")
-    private int rate;
+    private float rate;
     @NotBlank(message = "The comment can not be empty")
     private String comment;
     private long eventId;

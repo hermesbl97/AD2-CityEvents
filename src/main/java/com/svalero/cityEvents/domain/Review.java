@@ -19,13 +19,15 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column
-    private int rate;
+    private float rate;
     @Column
     private String comment;
     @Column(name = "register_date")
     private LocalDate registerDate;
     @Column
-    private boolean visible;
+    private boolean visible=true;
+    @Column
+    private int likes=0;
     @Column
     private boolean recommend;
 
