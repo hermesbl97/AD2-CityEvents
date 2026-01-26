@@ -31,6 +31,7 @@ public class ArtistServiceTests {
 
     @Test
     public void testFindAll() {
+
         List<Artist> mockArtistList = List.of(
           new Artist(1,"Jesús", "García", "Masculino", LocalDate.of(1999,3,2), "Cantante",
                   2523697, 1.77F, true, null),
@@ -59,6 +60,7 @@ public class ArtistServiceTests {
 
     @Test
     public void testFindByType() {
+
         List<Artist> mockArtistList = List.of(
                 new Artist(1,"Jesús", "García", "Masculino", LocalDate.of(1999,3,2), "Cantante",
                         2523697, 1.77F, true, null),
