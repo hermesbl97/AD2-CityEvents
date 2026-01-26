@@ -43,22 +43,9 @@ public class EventController {
             @RequestParam(value = "locationName", required = false) String locationName,
             @RequestParam(value = "price", required = false) Float price) {
 
-        List<Event> allEvents;
+        List<EventOutDto> allEventsOutDto = eventService.findAll(category, locationName, price);
 
-        if (category != null && !category.isEmpty()){
-            allEvents = eventService.findByCategory(category);
-        } else if (locationName != null && !locationName.isEmpty()){
-            allEvents = eventService.findByLocationName(locationName);
-        } else if (price != null) {
-            allEvents = eventService.findByPrice(price);
-        } else {
-            allEvents = eventService.findAll();
-        }
-
-        //Le decimos que nos mapee la lista de juegos a una lista con el objeto Dto que queremos mostrar. Y que mapee campo a campo los que coincidan
-        List<EventOutDto> eventsOutDto = modelMapper.map(allEvents, new TypeToken<List<EventOutDto>>() {}.getType());
-
-        return ResponseEntity.ok(eventsOutDto);
+        return ResponseEntity.ok(allEventsOutDto);
     }
 
     @GetMapping("/events/{id}")

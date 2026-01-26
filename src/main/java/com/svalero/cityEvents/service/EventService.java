@@ -4,9 +4,11 @@ import com.svalero.cityEvents.domain.Artist;
 import com.svalero.cityEvents.domain.Event;
 import com.svalero.cityEvents.domain.Location;
 import com.svalero.cityEvents.dto.EventInDto;
+import com.svalero.cityEvents.dto.EventOutDto;
 import com.svalero.cityEvents.exception.EventNotFoundException;
 import com.svalero.cityEvents.repository.EventRepository;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,9 +38,21 @@ public class EventService {
         eventRepository.delete(event);
     }
 
-    public List<Event> findAll() {
-        List<Event> allEvents = eventRepository.findAll();
-        return allEvents;
+    public List<EventOutDto> findAll(String category, String locationName, Float price) {
+        List<Event> allEvents;
+
+        if (category != null && !category.isEmpty()){
+            allEvents = eventRepository.findByCategory(category);
+        } else if (locationName != null && !locationName.isEmpty()){
+            allEvents = eventRepository.findByLocation_Name(locationName);
+        } else if (price != null) {
+            allEvents = eventRepository.findByPriceLessThanEqualOrderByPriceAsc(price);
+        } else {
+            allEvents = eventRepository.findAll();
+        }
+
+        //Le decimos que nos mapee la lista de juegos a una lista con el objeto Dto que queremos mostrar. Y que mapee campo a campo los que coincidan
+        return modelMapper.map(allEvents, new TypeToken<List<EventOutDto>>() {}.getType());
     }
 
     public List<Event> findByCategory(String category) {

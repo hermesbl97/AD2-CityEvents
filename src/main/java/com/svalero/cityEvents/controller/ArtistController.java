@@ -31,17 +31,7 @@ public class ArtistController {
             @RequestParam(value = "active", required = false) Boolean active,
             @RequestParam(value = "orderByFollowers", required = false) Boolean orderByFollowers) {
 
-        List<Artist> allArtists;
-
-        if (type != null && !type.isEmpty()) {
-            allArtists = artistService.findByType(type);
-        } else if (active != null && active) {
-            allArtists = artistService.findByArtistActiveTrue();
-        } else if (orderByFollowers != null && orderByFollowers) {
-            allArtists = artistService.findByFollowers();
-        } else {
-            allArtists = artistService.findAll();
-        }
+        List<Artist> allArtists = artistService.findAll(type, active, orderByFollowers);
 
         return ResponseEntity.ok(allArtists);
     }

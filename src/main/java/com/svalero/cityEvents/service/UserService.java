@@ -32,8 +32,19 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public List<User> findAll() {
-        List<User> allUsers = userRepository.findAll();
+    public List<User> findAll(String name, LocalDate date, Boolean active) {
+        List<User> allUsers;
+
+        if (name != null && !name.isEmpty()) {
+            allUsers = userRepository.findUserByName(name);
+        } else if (date != null){
+            allUsers = userRepository.findByBirthDateBefore(date);
+        } else if (active != null && active==false) {
+            allUsers = userRepository.findByActiveFalse();
+        } else {
+            allUsers = userRepository.findAll();
+        }
+
         return allUsers;
     }
 

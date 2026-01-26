@@ -27,8 +27,21 @@ public class ArtistService {
         artistRepository.delete(artist);
     }
 
-    public List<Artist> findAll() {
-        return artistRepository.findAll();
+    public List<Artist> findAll(String type, Boolean active, Boolean orderByFollowers) {
+
+        List<Artist> allArtists;
+
+        if (type != null && !type.isEmpty()) {
+            allArtists = artistRepository.findByType(type);
+        } else if (active != null && active) {
+            allArtists = artistRepository.findByActiveTrue();
+        } else if (orderByFollowers != null && orderByFollowers) {
+            allArtists = artistRepository.findAllByOrderByFollowersDesc();
+        } else {
+            allArtists = artistRepository.findAll();
+        }
+
+        return allArtists;
     }
 
     public List<Artist> findByType(String type) {

@@ -5,9 +5,11 @@ import com.svalero.cityEvents.domain.Location;
 import com.svalero.cityEvents.domain.Review;
 import com.svalero.cityEvents.domain.User;
 import com.svalero.cityEvents.dto.ReviewInDto;
+import com.svalero.cityEvents.dto.ReviewOutDto;
 import com.svalero.cityEvents.exception.ReviewNotFoundException;
 import com.svalero.cityEvents.repository.ReviewRepository;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,9 +39,22 @@ public class ReviewService {
         reviewRepository.delete(review);
     }
 
-    public List<Review> findAll(){
-        List<Review> allReviews = reviewRepository.findAll();
-        return allReviews;
+    public List<ReviewOutDto> findAll(String username, String eventName, Float rate){
+        List<Review> allReviews;
+
+        if (username != null && !username.isEmpty()) {
+            allReviews = reviewRepository.findByUserUsername(username);
+        } else if (eventName != null && !eventName.isEmpty()) {
+            allReviews = reviewRepository.findByEvent_Name(eventName);
+        } else if (rate != null) {
+            allReviews = reviewRepository.findByRateGreaterThan(rate);
+        } else {
+            allReviews = reviewRepository.findAll();
+        }
+
+        List<ReviewOutDto> reviewsOutDto = modelMapper.map(allReviews, new TypeToken<List<ReviewOutDto>>() {}.getType());
+
+        return reviewsOutDto;
     }
 
     public List<Review> findByUsername(String username) {

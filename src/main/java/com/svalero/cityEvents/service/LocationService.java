@@ -1,9 +1,11 @@
 package com.svalero.cityEvents.service;
 
 import com.svalero.cityEvents.domain.Location;
+import com.svalero.cityEvents.dto.LocationOutDto;
 import com.svalero.cityEvents.exception.LocationNotFoundException;
 import com.svalero.cityEvents.repository.LocationRepository;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -29,9 +31,22 @@ public class LocationService {
         locationRepository.delete(location);
     }
 
-    public List<Location> findAll() {
-        List<Location> allLocations = locationRepository.findAll();
-        return allLocations;
+    public List<LocationOutDto> findAll(String category, Boolean disabledAccess, Integer postalCode) {
+        List<Location> allLocations;
+
+        if (category != null && !category.isEmpty()) {
+            allLocations = locationRepository.findByCategory(category);
+        } else if (disabledAccess != null && disabledAccess){
+            allLocations = locationRepository.findByDisabledAccessTrue();
+        } else if (postalCode != null) {
+            allLocations = locationRepository.findByPostalCode(postalCode);
+        } else {
+            allLocations = locationRepository.findAll();
+        }
+
+        List<LocationOutDto> locationsOutDto = modelMapper.map(allLocations, new TypeToken<List<LocationOutDto>>() {}.getType());
+
+        return locationsOutDto;
     }
 
     public List<Location> findByCategory(String category) {

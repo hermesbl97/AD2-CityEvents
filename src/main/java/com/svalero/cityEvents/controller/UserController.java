@@ -30,17 +30,7 @@ public class UserController {
             @RequestParam(value = "date", required = false) LocalDate date,
             @RequestParam(value = "active", required = false) Boolean active) {
 
-        List<User> allUsers;
-
-        if (name != null && !name.isEmpty()) {
-            allUsers = userService.findUserByName(name);
-        } else if (date != null){
-            allUsers = userService.findUserBornBefore(date);
-        } else if (active != null && active==false) {
-            allUsers = userService.findUserNotActive();
-        } else {
-            allUsers = userService.findAll();
-        }
+        List<User> allUsers = userService.findAll(name, date, active);
 
         return ResponseEntity.ok(allUsers);
     }
