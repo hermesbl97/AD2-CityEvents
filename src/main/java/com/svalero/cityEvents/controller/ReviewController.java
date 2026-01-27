@@ -48,21 +48,9 @@ public class ReviewController {
             @RequestParam(value = "eventName", required = false) String eventName,
             @RequestParam(value = "rate", required = false) Float rate) {
 
-        List<Review> allReviews;
+        List<ReviewOutDto> allReviewsOutDto = reviewService.findAll(username, eventName, rate);
 
-        if (username != null && !username.isEmpty()) {
-         allReviews = reviewService.findByUsername(username);
-        } else if (eventName != null && !eventName.isEmpty()) {
-            allReviews = reviewService.findByEventName(eventName);
-        } else if (rate != null) {
-            allReviews = reviewService.findByRate(rate);
-        } else {
-            allReviews = reviewService.findAll();
-        }
-
-        List<ReviewOutDto> reviewsOutDto = modelMapper.map(allReviews, new TypeToken<List<ReviewOutDto>>() {}.getType());
-
-        return ResponseEntity.ok(reviewsOutDto);
+        return ResponseEntity.ok(allReviewsOutDto);
     }
 
     @GetMapping("/reviews/{id}")

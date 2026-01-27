@@ -1,6 +1,7 @@
 package com.svalero.cityEvents.controller;
 
 import com.svalero.cityEvents.domain.Artist;
+import com.svalero.cityEvents.dto.ArtistOutDto;
 import com.svalero.cityEvents.exception.ArtistNotFoundException;
 import com.svalero.cityEvents.exception.ErrorResponse;
 import com.svalero.cityEvents.service.ArtistService;
@@ -26,22 +27,12 @@ public class ArtistController {
     private ModelMapper modelMapper;
 
     @GetMapping("/artists")
-    public ResponseEntity<List<Artist>> getAll (
+    public ResponseEntity<List<ArtistOutDto>> getAll (
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "active", required = false) Boolean active,
             @RequestParam(value = "orderByFollowers", required = false) Boolean orderByFollowers) {
 
-        List<Artist> allArtists;
-
-        if (type != null && !type.isEmpty()) {
-            allArtists = artistService.findByType(type);
-        } else if (active != null && active) {
-            allArtists = artistService.findByArtistActiveTrue();
-        } else if (orderByFollowers != null && orderByFollowers) {
-            allArtists = artistService.findByFollowers();
-        } else {
-            allArtists = artistService.findAll();
-        }
+        List<ArtistOutDto> allArtists = artistService.findAll(type, active, orderByFollowers);
 
         return ResponseEntity.ok(allArtists);
     }
