@@ -46,18 +46,20 @@ public class ReviewServiceTests {
         List<ReviewOutDto> mockReviewOutDto = List.of(
             new ReviewOutDto(1,4.0f, "Me ha gustado mucho", LocalDate.of(2022,3,2), 35, true),
             new ReviewOutDto(2, 3.2f, "Ha estado bien, pero mejorable", LocalDate.of(2023,5,12),22, true),
-                new ReviewOutDto(3, 1.3f, "No lo recomiendo", LocalDate.of(2023,2,1),1, false)
+            new ReviewOutDto(3, 1.3f, "No lo recomiendo", LocalDate.of(2023,2,1),1, false)
         );
 
         when(reviewRepository.findAll()).thenReturn(mockReviewList);
         when(modelMapper.map(mockReviewList, new TypeToken<List<ReviewOutDto>>() {}.getType())).thenReturn(mockReviewOutDto);
 
-        List<ReviewOutDto> actualEventList = reviewService.findAll("","",null);
-        assertEquals(3, actualEventList.size());
-        assertEquals(35, actualEventList.getFirst().getLikes());
+        List<ReviewOutDto> actualReviewList = reviewService.findAll("","",null);
+        assertEquals(3, actualReviewList.size());
+        assertEquals(35, actualReviewList.getFirst().getLikes());
 
         verify(reviewRepository, times(1)).findAll();
         verify(reviewRepository, times(0)).findByEvent_Name("");
+        verify(reviewRepository, times(0)).findByUserUsername("");
+        verify(reviewRepository, times(0)).findByRateGreaterThan(3);
     }
 
     @Test
@@ -83,12 +85,14 @@ public class ReviewServiceTests {
         when(reviewRepository.findByUserUsername("martin123")).thenReturn(mockReviewList);
         when(modelMapper.map(mockReviewList, new TypeToken<List<ReviewOutDto>>() {}.getType())).thenReturn(mockReviewOutDto);
 
-        List<ReviewOutDto> actualEventList = reviewService.findAll("martin123","",null);
-        assertEquals(1, actualEventList.size());
-        assertEquals(35, actualEventList.getFirst().getLikes());
+        List<ReviewOutDto> actualReviewList = reviewService.findAll("martin123","",null);
+        assertEquals(1, actualReviewList.size());
+        assertEquals(35, actualReviewList.getFirst().getLikes());
 
         verify(reviewRepository, times(0)).findAll();
         verify(reviewRepository, times(1)).findByUserUsername("martin123");
+        verify(reviewRepository, times(0)).findByEvent_Name("");
+        verify(reviewRepository, times(0)).findByRateGreaterThan(3);
     }
 
     @Test
@@ -115,12 +119,14 @@ public class ReviewServiceTests {
         when(reviewRepository.findByEvent_Name("Musical Navideño")).thenReturn(mockReviewList);
         when(modelMapper.map(mockReviewList, new TypeToken<List<ReviewOutDto>>() {}.getType())).thenReturn(mockReviewOutDto);
 
-        List<ReviewOutDto> actualEventList = reviewService.findAll("","Musical Navideño",null);
-        assertEquals(2, actualEventList.size());
-        assertEquals(22, actualEventList.getFirst().getLikes());
+        List<ReviewOutDto> actualReviewList = reviewService.findAll("","Musical Navideño",null);
+        assertEquals(2, actualReviewList.size());
+        assertEquals(22, actualReviewList.getFirst().getLikes());
 
         verify(reviewRepository, times(0)).findAll();
         verify(reviewRepository, times(1)).findByEvent_Name("Musical Navideño");
+        verify(reviewRepository, times(0)).findByUserUsername("");
+        verify(reviewRepository, times(0)).findByRateGreaterThan(3);
     }
 
     @Test
@@ -143,14 +149,13 @@ public class ReviewServiceTests {
         when(reviewRepository.findByRateGreaterThan(3f)).thenReturn(mockReviewList);
         when(modelMapper.map(mockReviewList, new TypeToken<List<ReviewOutDto>>() {}.getType())).thenReturn(mockReviewOutDto);
 
-        List<ReviewOutDto> actualEventList = reviewService.findAll("","",3f);
-        assertEquals(2, actualEventList.size());
-        assertEquals(22, actualEventList.getLast().getLikes());
+        List<ReviewOutDto> actualReviewList = reviewService.findAll("","",3f);
+        assertEquals(2, actualReviewList.size());
+        assertEquals(22, actualReviewList.getLast().getLikes());
 
         verify(reviewRepository, times(0)).findAll();
         verify(reviewRepository, times(1)).findByRateGreaterThan(3f);
+        verify(reviewRepository, times(0)).findByUserUsername("");
+        verify(reviewRepository, times(0)).findByEvent_Name("");
     }
-
-
-
 }

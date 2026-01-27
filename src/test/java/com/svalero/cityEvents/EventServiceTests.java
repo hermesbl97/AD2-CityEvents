@@ -56,6 +56,8 @@ public class EventServiceTests {
 
         verify(eventRepository, times(1)).findAll(); //comprobamos que se haya llamado una vez al método findAll.
         verify(eventRepository, times(0)).findByCategory(""); //comprobamos que no se haya llamado al método por categoría
+        verify(eventRepository, times(0)).findByLocation_Name("");
+        verify(eventRepository, times(0)).findByPriceLessThanEqualOrderByPriceAsc(30f);
     }
 
     @Test
@@ -83,7 +85,8 @@ public class EventServiceTests {
 
         verify(eventRepository, times(0)).findAll();
         verify(eventRepository, times(1)).findByCategory("Evento");
-
+        verify(eventRepository, times(0)).findByLocation_Name("");
+        verify(eventRepository, times(0)).findByPriceLessThanEqualOrderByPriceAsc(30f);
     }
 
     @Test
@@ -118,6 +121,8 @@ public class EventServiceTests {
 
         verify(eventRepository, times(0)).findAll();
         verify(eventRepository, times(1)).findByLocation_Name("Plaza del Pilar");
+        verify(eventRepository, times(0)).findByCategory("");
+        verify(eventRepository, times(0)).findByPriceLessThanEqualOrderByPriceAsc(30f);
     }
 
     @Test
@@ -146,6 +151,8 @@ public class EventServiceTests {
 
         verify(eventRepository, times(0)).findAll();
         verify(eventRepository, times(1)).findByPriceLessThanEqualOrderByPriceAsc(30f);
+        verify(eventRepository, times(0)).findByLocation_Name("");
+        verify(eventRepository, times(0)).findByCategory("");
     }
 
 }

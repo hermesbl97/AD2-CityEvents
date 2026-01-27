@@ -2,6 +2,7 @@ package com.svalero.cityEvents.controller;
 
 import com.svalero.cityEvents.domain.User;
 import com.svalero.cityEvents.dto.UserInDto;
+import com.svalero.cityEvents.dto.UserOutDto;
 import com.svalero.cityEvents.exception.ErrorResponse;
 import com.svalero.cityEvents.exception.UserNotFoundException;
 import com.svalero.cityEvents.service.UserService;
@@ -25,12 +26,12 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/usuarios")
-    public ResponseEntity<List<User>> getAllUsers (
+    public ResponseEntity<List<UserOutDto>> getAllUsers (
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "date", required = false) LocalDate date,
             @RequestParam(value = "active", required = false) Boolean active) {
 
-        List<User> allUsers = userService.findAll(name, date, active);
+        List<UserOutDto> allUsers = userService.findAll(name, date, active);
 
         return ResponseEntity.ok(allUsers);
     }

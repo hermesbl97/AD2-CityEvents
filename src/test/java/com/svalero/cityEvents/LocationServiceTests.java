@@ -57,6 +57,8 @@ public class LocationServiceTests {
 
         verify(locationRepository, times(1)).findAll();
         verify(locationRepository, times(0)).findByCategory("");
+        verify(locationRepository, times(0)).findByDisabledAccessTrue();
+        verify(locationRepository, times(0)).findByPostalCode(50001);
     }
 
     @Test
@@ -85,6 +87,8 @@ public class LocationServiceTests {
 
         verify(locationRepository, times(0)).findAll();
         verify(locationRepository, times(1)).findByCategory("Monumento");
+        verify(locationRepository, times(0)).findByDisabledAccessTrue();
+        verify(locationRepository, times(0)).findByPostalCode(50001);
     }
 
     @Test
@@ -114,6 +118,8 @@ public class LocationServiceTests {
 
         verify(locationRepository, times(0)).findAll();
         verify(locationRepository, times(1)).findByPostalCode(50001);
+        verify(locationRepository, times(0)).findByDisabledAccessTrue();
+        verify(locationRepository, times(0)).findByCategory("");
     }
 
     @Test
@@ -143,6 +149,10 @@ public class LocationServiceTests {
 
         verify(locationRepository, times(0)).findAll();
         verify(locationRepository, times(1)).findByDisabledAccessTrue();
+        verify(locationRepository, times(0)).findByCategory("");
+        verify(locationRepository, times(0)).findByPostalCode(50001);
+
+
     }
 
 

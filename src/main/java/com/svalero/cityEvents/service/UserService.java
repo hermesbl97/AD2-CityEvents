@@ -1,10 +1,13 @@
 package com.svalero.cityEvents.service;
 
 import com.svalero.cityEvents.domain.User;
+import com.svalero.cityEvents.dto.ReviewOutDto;
 import com.svalero.cityEvents.dto.UserInDto;
+import com.svalero.cityEvents.dto.UserOutDto;
 import com.svalero.cityEvents.exception.UserNotFoundException;
 import com.svalero.cityEvents.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,20 +35,23 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public List<User> findAll(String name, LocalDate date, Boolean active) {
+    public List<UserOutDto> findAll(String name, LocalDate date, Boolean active) {
+
         List<User> allUsers;
 
         if (name != null && !name.isEmpty()) {
             allUsers = userRepository.findUserByName(name);
         } else if (date != null){
             allUsers = userRepository.findByBirthDateBefore(date);
-        } else if (active != null && active==false) {
+        } else if (active != null && !active) {
             allUsers = userRepository.findByActiveFalse();
         } else {
             allUsers = userRepository.findAll();
         }
 
-        return allUsers;
+        List<UserOutDto> usersOutDto = modelMapper.map(allUsers, new TypeToken<List<UserOutDto>>() {}.getType());
+
+        return usersOutDto;
     }
 
     public User findUserById(long id) throws UserNotFoundException {

@@ -56,6 +56,8 @@ public class ArtistServiceTests {
 
         verify(artistRepository, times(1)).findAll();
         verify(artistRepository, times(0)).findByType("");
+        verify(artistRepository, times(0)).findAllByOrderByFollowersDesc();
+        verify(artistRepository, times(0)).findByActiveTrue();
     }
 
     @Test
@@ -83,6 +85,8 @@ public class ArtistServiceTests {
 
         verify(artistRepository, times(0)).findAll();
         verify(artistRepository, times(1)).findByType("Actor");
+        verify(artistRepository, times(0)).findAllByOrderByFollowersDesc();
+        verify(artistRepository, times(0)).findByActiveTrue();
     }
 
     @Test
@@ -110,6 +114,8 @@ public class ArtistServiceTests {
 
         verify(artistRepository, times(0)).findAll();
         verify(artistRepository, times(1)).findByActiveTrue();
+        verify(artistRepository, times(0)).findAllByOrderByFollowersDesc();
+        verify(artistRepository, times(0)).findByType("");
     }
 
     @Test
@@ -138,8 +144,8 @@ public class ArtistServiceTests {
 
         verify(artistRepository, times(0)).findAll();
         verify(artistRepository, times(1)).findAllByOrderByFollowersDesc();
+        verify(artistRepository, times(0)).findByType("");
+        verify(artistRepository, times(0)).findByActiveTrue();
     }
-
-
 
 }
