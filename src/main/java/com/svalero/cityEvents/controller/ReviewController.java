@@ -87,6 +87,12 @@ public class ReviewController {
         return new ResponseEntity<>(errorResponse,HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(EventNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleException(EventNotFoundException enfe) {
+        ErrorResponse errorResponse = ErrorResponse.notFound("The event does not exist");
+        return new ResponseEntity<>(errorResponse,HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(UserNotFoundException unfe) {
         ErrorResponse errorResponse = ErrorResponse.notFound("The user does not exist");
