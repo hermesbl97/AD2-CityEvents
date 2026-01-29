@@ -176,6 +176,17 @@ public class EventServiceTests {
         verify(eventRepository, times(1)).findById(3L);
     }
 
+    @Test
+    public void testFindByIdNotFundArtist() {
+
+        when(eventRepository.findById(2L)).thenReturn(Optional.empty());
+
+        //Comprobamos que lanza la excepción
+        assertThrows(EventNotFoundException.class, () -> eventService.findById(2L));
+
+        verify(eventRepository, times(1)).findById(2L);
+    }
+
 
     @Test
     public void testAddEvent() {
@@ -201,7 +212,7 @@ public class EventServiceTests {
     }
 
     @Test
-    public void testModifyEvent200() throws EventNotFoundException {
+    public void testModifyEvent() throws EventNotFoundException {
 
         Event existingEvent = new Event();
         existingEvent.setName("Concierto juvenil");
@@ -239,7 +250,7 @@ public class EventServiceTests {
     }
 
     @Test
-    public void testDeleteEvent204() throws EventNotFoundException {
+    public void testDeleteEvent() throws EventNotFoundException {
         Event event = new Event();
         event.setId(15L);
 
@@ -252,7 +263,7 @@ public class EventServiceTests {
     }
 
     @Test
-    public void testDeleteEventNotFound404() {
+    public void testDeleteEventNotFound() {
 
         Event event = new Event();
 
