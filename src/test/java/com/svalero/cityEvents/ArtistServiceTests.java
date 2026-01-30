@@ -229,6 +229,7 @@ public class ArtistServiceTests {
         artistService.modify(4L, updatingArtist);
 
         verify(modelMapper).map(updatingArtist,existingArtist);
+        verify(artistRepository, times(1)).findById(4L);
         verify(artistRepository).save(existingArtist);
     }
 
