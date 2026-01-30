@@ -1,10 +1,12 @@
 package com.svalero.cityEvents;
 
-import com.svalero.cityEvents.domain.Event;
-import com.svalero.cityEvents.domain.Review;
-import com.svalero.cityEvents.domain.User;
+import com.svalero.cityEvents.domain.*;
+import com.svalero.cityEvents.dto.EventInDto;
 import com.svalero.cityEvents.dto.EventOutDto;
+import com.svalero.cityEvents.dto.ReviewInDto;
 import com.svalero.cityEvents.dto.ReviewOutDto;
+import com.svalero.cityEvents.exception.EventNotFoundException;
+import com.svalero.cityEvents.exception.ReviewNotFoundException;
 import com.svalero.cityEvents.repository.ReviewRepository;
 import com.svalero.cityEvents.service.ReviewService;
 import org.junit.jupiter.api.Test;
@@ -17,8 +19,9 @@ import org.modelmapper.TypeToken;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -96,7 +99,7 @@ public class ReviewServiceTests {
     }
 
     @Test
-    public void testFindByEvent_Name() {
+    public void testFindByEventName() {
 
         Event event = new Event();
         event.setId(2);
@@ -157,5 +160,113 @@ public class ReviewServiceTests {
         verify(reviewRepository, times(1)).findByRateGreaterThan(3f);
         verify(reviewRepository, times(0)).findByUserUsername("");
         verify(reviewRepository, times(0)).findByEvent_Name("");
+    }
+
+    @Test
+    public void testFindById() throws ReviewNotFoundException {
+        Review mockReview = new Review(3, 4.0f, "Me ha gustado mucho", LocalDate.of(2022,3,2),
+                true, 35, true, null, null);
+
+        when(reviewRepository.findById(3L)).thenReturn(Optional.of(mockReview));
+
+        Review review = reviewService.getReviewById(3L);
+        assertEquals(35, review.getLikes());
+        assertEquals(4.0f, review.getRate());
+
+        verify(reviewRepository, times(1)).findById(3L);
+    }
+
+    @Test
+    public void testFindByIdNotFoundReview() {
+
+        when(reviewRepository.findById(2L)).thenReturn(Optional.empty());
+
+        //Comprobamos que lanza la excepción
+        assertThrows(ReviewNotFoundException.class, () -> reviewService.getReviewById(2L));
+
+        verify(reviewRepository, times(1)).findById(2L);
+    }
+
+    @Test
+    public void testAddReview() {
+        Event event = new Event();
+        event.setId(20L);
+
+        User user = new User();
+        user.setId(3L);
+
+
+        ReviewInDto reviewInDto = new ReviewInDto(LocalDate.of(2022,3,2), true, 4.0f, "Me ha gustado mucho",
+                20, 3);
+
+        Review registerReview = new Review(3, 4.0f, "Me ha gustado mucho", LocalDate.of(2022,3,2),
+                true, 35, true, event, user);
+
+        when(reviewRepository.save(any(Review.class))).thenReturn(registerReview);
+
+        Review resultReview = reviewService.add(reviewInDto, event, user);
+
+        assertEquals(registerReview, resultReview);
+        assertTrue(resultReview.isRecommend());
+
+        verify(reviewRepository, times(1)).save(any(Review.class));
+    }
+
+    @Test
+    public void testModifyReview() throws ReviewNotFoundException {
+
+        Review existingReview = new Review();
+        existingReview.setRate(4.1f);
+        existingReview.setId(45);
+
+        Review updatingReview = new Review();
+        updatingReview.setRate(3.5f);
+
+        when(reviewRepository.findById(45L)).thenReturn(Optional.of(existingReview));
+        when(reviewRepository.save(existingReview)).thenReturn(existingReview);
+
+        reviewService.modify(45L, updatingReview);
+
+        verify(modelMapper).map(updatingReview,existingReview);
+        verify(reviewRepository).save(existingReview);
+    }
+
+    @Test
+    public void testModifyReviewNotFound() {
+
+        Review review = new Review();
+
+        when(reviewRepository.findById(15L)).thenReturn(Optional.empty());
+
+        assertThrows(ReviewNotFoundException.class, () -> reviewService.modify(15L, review));
+
+        verify(reviewRepository, times(1)).findById(15L);
+        verify(reviewRepository, never()).save(any(Review.class));
+    }
+
+    @Test
+    public void testDeleteReview() throws ReviewNotFoundException {
+        Review review = new Review();
+        review.setId(15L);
+
+        when(reviewRepository.findById(15L)).thenReturn(Optional.of(review));
+
+        reviewService.delete(15L);
+
+        verify(reviewRepository, times(1)).findById(15L);
+        verify(reviewRepository, times(1)).delete(review);
+    }
+
+    @Test
+    public void testDeleteReviewNotFound() {
+
+        Review review = new Review();
+
+        when(reviewRepository.findById(15L)).thenReturn(Optional.empty());
+
+        assertThrows(ReviewNotFoundException.class, () -> reviewService.delete(15));
+
+        verify(reviewRepository, times(1)).findById(15L);
+        verify(reviewRepository, times(0)).delete(any(Review.class));
     }
 }

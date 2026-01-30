@@ -1,8 +1,9 @@
 package com.svalero.cityEvents;
 
 import com.svalero.cityEvents.domain.User;
-import com.svalero.cityEvents.dto.ReviewOutDto;
+import com.svalero.cityEvents.dto.UserInDto;
 import com.svalero.cityEvents.dto.UserOutDto;
+import com.svalero.cityEvents.exception.UserNotFoundException;
 import com.svalero.cityEvents.repository.UserRepository;
 import com.svalero.cityEvents.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -15,8 +16,9 @@ import org.modelmapper.TypeToken;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -134,6 +136,109 @@ public class UserServiceTests {
         verify(userRepository, times(0)).findUserByName("");
         verify(userRepository, times(0)).findByBirthDateBefore(null);
         verify(userRepository, times(1)).findByActiveFalse();
+    }
+
+    @Test
+    public void testFindUserById() throws UserNotFoundException {
+        User mockUser = new User(2, "sofiladf", "Sofia", "Labarta", LocalDate.of(1995,1,2), 614784236,
+                false, null);
+
+
+        when(userRepository.findById(2L)).thenReturn(Optional.of(mockUser));
+
+        User user = userService.findUserById(2L);
+        assertEquals("sofiladf", user.getUsername());
+        assertFalse(user.isActive());
+
+        verify(userRepository, times(1)).findById(2L);
+    }
+
+    @Test
+    public void testFindUserByIdNotFound() throws UserNotFoundException {
+
+        when(userRepository.findById(65L)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> userService.findUserById(65L));
+
+        verify(userRepository, times(1)).findById(65L);
+    }
+
+    @Test
+    public void testAddUser() {
+
+        UserInDto userInDto = new UserInDto("martina35", "Martina", "Soro", LocalDate.of(1994,3,2),
+                623159865);
+
+        User registerUser = new User(3, "martina35", "Martina", "Soro", LocalDate.of(1994,3,2),
+                623159865, true, null);
+
+        when(userRepository.save(any(User.class))).thenReturn(registerUser);
+
+        User resultUser = userService.add(userInDto);
+
+        assertEquals(registerUser, resultUser);
+        assertEquals("martina35", resultUser.getUsername());
+        assertEquals("Soro", resultUser.getSurname());
+
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    public void testModifyUser() throws UserNotFoundException {
+
+        User existingUser = new User();
+        existingUser.setName("Marcos");
+        existingUser.setId(17);
+
+        User updatingUser = new User();
+        updatingUser.setName("Sergio");
+
+        when(userRepository.findById(17L)).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(existingUser)).thenReturn(existingUser);
+
+        userService.modify(17L, updatingUser);
+
+        verify(modelMapper).map(updatingUser,existingUser);
+        verify(userRepository, times(1)).findById(17L);
+        verify(userRepository).save(existingUser);
+    }
+
+    @Test
+    public void testModifyUserNotFound() {
+
+        User user = new User();
+
+        when(userRepository.findById(15L)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> userService.modify(15L, user));
+
+        verify(userRepository, times(1)).findById(15L);
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    public void testDeleteUser() throws UserNotFoundException {
+
+        User user = new User();
+        user.setId(15L);
+
+        when(userRepository.findById(15L)).thenReturn(Optional.of(user));
+
+        userService.delete(15L);
+
+        verify(userRepository, times(1)).findById(15L);
+        verify(userRepository, times(1)).delete(user);
+    }
+
+    @Test
+    public void testDeleteUserNotFound() {
+
+        when(userRepository.findById(19L)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> userService.delete(19));
+
+        verify(userRepository, times(1)).findById(19L);
+        verify(userRepository, times(0)).delete(any(User.class));
     }
 
 }
