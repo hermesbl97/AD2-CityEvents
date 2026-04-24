@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.svalero</groupId>
-	<artifactId>cityEvents</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>cityEvents</name>
+	<artifactId>cityEvents2</artifactId>
+	<version>0.1</version>
+	<name>cityEvents2</name>
 	<description>API de eventos en tu ciudad</description>
 	<url/>
 	<licenses>

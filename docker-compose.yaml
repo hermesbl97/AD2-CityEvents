@@ -1,0 +1,44 @@
+name: cityEvents2
+services:
+  cityEvents2-db:
+    image: mariadb:11.3.2
+    container_name: cityEvents2-db
+    environment:
+      MARIADB_DATABASE: cityEvents2_database
+      MARIADB_USER: cityEvents2_user
+      MARIADB_PASSWORD: cityEvents2_password
+      MARIADB_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: [ CMD, healthcheck.sh, --connect, --innodb_initialized ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+    networks:
+      - network-cityEvents2
+
+  cityEvents2-api:
+    image: city-events2-api
+    container_name: city-events2-api
+    ports:
+      - "8089:8089"
+    depends_on:
+      cityEvents2-db:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_JSON: '{
+      "spring.application.name": "cityEvents2",
+      "server.port": "8089",
+      "spring.jpa.hibernate.ddl-auto": "update",
+      "spring.jpa.properties.hibernate.globally_quoted_identifiers":"true",
+      "spring.datasource.url": "jdbc:mariadb://cityEvents2-db:3306/cityEvents2_database",
+      "spring.datasource.username": "cityEvents2_user",
+      "spring.datasource.password": "cityEvents2_password",
+      "spring.jpa.database-platform": "org.hibernate.dialect.MariaDBDialect"
+      }'
+    networks:
+      - network-cityEvents2
+networks:
+  network-cityEvents2:
+    driver: bridge
