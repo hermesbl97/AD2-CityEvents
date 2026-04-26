@@ -81,6 +81,13 @@ public class LocationController {
         return ResponseEntity.ok(newLocation);
     } //cuando se modifica la localización nos la devuelve
 
+    @PutMapping("/v2/locations/{id}")
+    public ResponseEntity<LocationV2> modifyLocation(@PathVariable long id, @RequestBody LocationV2 location) throws LocationNotFoundException { //usamos el path variable para recoger el id del elemento que queremos modificar en el endpoint
+        LocationV2 newLocation= locationService.modifyV2(id, location);
+//       return new ResponseEntity<>(newLocation, HttpStatus.OK);   Es identico a la siguiente linea
+        return ResponseEntity.ok(newLocation);
+    }
+
     @DeleteMapping("/v1/locations/{id}")
     public ResponseEntity<Void> deleteLocation(@PathVariable long id) throws LocationNotFoundException {
         locationService.delete(id);

@@ -95,4 +95,15 @@ public class LocationService {
 
         return locationRepository.save(existingLocation);
     }
+
+    public LocationV2 modifyV2(long id, LocationV2 location) throws LocationNotFoundException {
+        LocationV2 existingLocation = locationRepositoryV2.findById(id)
+                .orElseThrow(LocationNotFoundException::new);
+
+        modelMapper.map(location,existingLocation);
+        existingLocation.setId(id); //le definimos el id para que no nos cuele el id 0 de location
+        existingLocation.setDisabledAccess(true);
+
+        return locationRepositoryV2.save(existingLocation);
+    }
 }
