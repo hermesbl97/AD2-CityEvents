@@ -12,6 +12,7 @@ paths:
       description: | 
         Nos devuelve una lista completa con todos los elementos. 
         Se puede realizar búsqueda tanto de la lista completa como realizar un filtrado tanto por categoría evento como por nombre de la localización donde tiene lugar el evento.
+      deprecated: true
       parameters:
         - name: category
           in: query

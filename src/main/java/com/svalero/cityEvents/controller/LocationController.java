@@ -47,11 +47,11 @@ public class LocationController {
 
     @GetMapping("/v2/locations")
     public ResponseEntity<List<LocationOutDtoV2>> getALLV2(
-            @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "city", required = false) String city,
             @RequestParam(value = "disabledAccess", required = false) Boolean disabledAccess,
             @RequestParam(value = "postalCode", required = false) Integer postalCode) {
 
-        List<LocationOutDtoV2> allLocationsOutDto = locationService.findAllV2(category, disabledAccess, postalCode);
+        List<LocationOutDtoV2> allLocationsOutDto = locationService.findAllV2(city, disabledAccess, postalCode);
 
         return ResponseEntity.ok(allLocationsOutDto);
     }
@@ -84,6 +84,12 @@ public class LocationController {
     @DeleteMapping("/v1/locations/{id}")
     public ResponseEntity<Void> deleteLocation(@PathVariable long id) throws LocationNotFoundException {
         locationService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/v2/locations")
+    public ResponseEntity<Void> deleteLocationV2(@RequestParam(value = "city") String city) {
+        locationService.deleteV2(city);
         return ResponseEntity.noContent().build();
     }
 

@@ -40,6 +40,10 @@ public class LocationService {
         locationRepository.delete(location);
     }
 
+    public void deleteV2(String city) {
+        locationRepositoryV2.deleteByCity(city);
+    }
+
     public List<LocationOutDto> findAll(String category, Boolean disabledAccess, Integer postalCode) {
         List<Location> allLocations;
 
@@ -58,11 +62,11 @@ public class LocationService {
         return locationsOutDto;
     }
 
-    public List<LocationOutDtoV2> findAllV2(String category, Boolean disabledAccess, Integer postalCode) {
+    public List<LocationOutDtoV2> findAllV2(String city, Boolean disabledAccess, Integer postalCode) {
         List<LocationV2> allLocations;
 
-        if (category != null && !category.isEmpty()) {
-            allLocations = locationRepositoryV2.findByCategory(category);
+        if (city != null && !city.isEmpty()) {
+            allLocations = locationRepositoryV2.findByCity(city);
         } else if (disabledAccess != null && disabledAccess){
             allLocations = locationRepositoryV2.findByDisabledAccessTrue();
         } else if (postalCode != null) {
