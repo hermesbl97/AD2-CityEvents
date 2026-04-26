@@ -4,14 +4,15 @@ info:
   description: API informativa de los eventos de tu ciudad.
   version: 1.0.0
 servers:
-  - url: 'https://cityEvents.com'
+  - url: 'https://cityEvents.com/api'
 paths:
-  /events:
+  /v1/events:
     get:
       summary: Lista de eventos
       description: | 
         Nos devuelve una lista completa con todos los elementos. 
         Se puede realizar búsqueda tanto de la lista completa como realizar un filtrado tanto por categoría evento como por nombre de la localización donde tiene lugar el evento.
+      deprecated: true
       parameters:
         - name: category
           in: query
@@ -68,7 +69,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /events/{id}:
+  /v1/events/{id}:
     get:
       summary: Vista de un evento
       description: Devuelve la vista mucho más detallada de un evento en concreto. Búsqueda filtrada por Id
@@ -157,7 +158,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /locations:
+  /v1/locations:
     get:
       summary: Lista de localizaciones
       description: |
@@ -188,6 +189,7 @@ paths:
     post:
       summary: Registrar localización
       description: Permite registrar una localización en nuestra base de datos.
+      deprecated: true
       requestBody:
         description: Los datos de la nueva localización
         content:
@@ -213,10 +215,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /locations/{id}:
+  /v1/locations/{id}:
     get:
       summary: Vista de una localización
       description: Devuelve la vista mucho más detallada de una localización en concreto. Búsqueda filtrada por Id
+      deprecated: true
       responses:
         '200':
           description: OK
@@ -247,6 +250,7 @@ paths:
     put:
       summary: Editar una localización
       description: Nos permite modificar, por "Id", los datos de una localización en nuestra base de datos.
+      deprecated: true
       requestBody:
         description: Los datos de la nueva localización. Son los que sobreescribiremos sobre la antigua.
         content:
@@ -260,6 +264,122 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not Found Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    delete:
+      summary: Borrar localización
+      description: Permite eliminar una localización, por "Id", de la base de datos.
+      deprecated: true
+      responses:
+        '204':
+          description: Localización eliminada de la base de datos. (No devuelve ningún dato).
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '404':
+          description: Not Found Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /v2/locations:
+    get:
+      summary: Lista de localizaciones (2º versión)
+      description: |
+        Nos devuelve una lista completa con todas las localizaciones en las que se celebran eventos.
+        Se puede realizar búsqueda tanto de la lista completa como realizar un filtrado tanto por categoría evento como por las localizaciones accesibles para gente con discapacidad.
+      parameters:
+        - name: category
+          in: query
+          description: Filtra por localizaciones que dispongan de acceso para personas con alguna discapacidad.
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LocationOutDtoV2'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    post:
+      summary: Registrar localización (2º versión)
+      description: Permite registrar una localización en nuestra base de datos.
+      requestBody:
+        description: Los datos de la nueva localización
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationInDtoV2'
+      responses:
+        '201':
+          description: Localización registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationV2'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+  /v2/locations/{id}:
+    put:
+      summary: Editar una localización (2º versión)
+      description: Nos permite modificar, por "Id", los datos de una localización en nuestra base de datos.
+      requestBody:
+        description: Los datos de la nueva localización. Son los que sobreescribiremos sobre la antigua.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationInDtoV2'
+      responses:
+        '200':
+          description: Localización registrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationV2'
         '400':
           description: Bad request
           content:
@@ -302,7 +422,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /artists:
+  /v1/artists:
     get:
       summary: Lista de artistas
       description: |
@@ -364,7 +484,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /artists/{id}:
+  /v1/artists/{id}:
     get:
       summary: Vista de un artista
       description: Devuelve la vista mucho más detallada de un artista en concreto. Búsqueda filtrada por Id
@@ -453,7 +573,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /reviews:
+  /v1/reviews:
     get:
       summary: Lista de reseñas.
       description: |
@@ -515,7 +635,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /reviews/{id}:
+  /v1/reviews/{id}:
     get:
       summary: Vista de una reseña
       description: Devuelve la vista mucho más detallada de una reseña en concreto. Búsqueda filtrada por Id
@@ -604,7 +724,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /users:
+  /v1/users:
     get:
       summary: Lista de usuarios
       description: |
@@ -666,7 +786,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /users/{id}:
+  /v1/users/{id}:
     get:
       summary: Vista de un usuario
       description: Devuelve la vista mucho más detallada de un usuario en concreto. Búsqueda filtrada por Id
@@ -896,6 +1016,76 @@ components:
         postalCode: 5001
         registerDate: 2026-01-13
         disabledAcces: true
+    LocationV2:
+      allOf:
+        - $ref: '#/components/schemas/LocationInDtoV2'
+      type: object
+      properties:
+        id:
+          type: number
+          format: int64
+          description: Identificador del evento
+      example:
+        name: Teatro Principal
+        description: Teatro más importante de la ciudad de Zaragoza.
+        category: Teatro
+        streetLocated: Coso
+        postalCode: 5001
+        registerDate: 2026-01-13
+        disabledAccess: true
+    LocationInDtoV2:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nombre de la localización
+        description:
+          type: string
+          description: Descripción de la localización
+        category:
+          type: string
+          description: Tipo de evento
+        streetLocated:
+          type: string
+          description: Calle en la que se encuentra situada la localización
+        postalCode:
+          type: number
+          format: double
+          description: Número de código postal de la localización
+        registerDate:
+          type: string
+          format: date
+          description: Fecha en la que se registra la localización nueva
+        disabledAccess:
+          type: boolean
+          description: Indica si tiene acceso para persona discapacitadas
+        city:
+          type: string
+          description: Ciudad de la localización
+          required: true
+      example:
+        name: Teatro Principal
+        description: Teatro más importante de la ciudad de Zaragoza.
+        category: Teatro
+        streetLocated: Coso
+        postalCode: 5001
+        registerDate: 2026-01-13
+        disabledAcces: true
+        city: Teruel
+    LocationOutDtoV2:
+      allOf:
+        - $ref: '#/components/schemas/LocationOutDto'
+      type: object
+      properties:
+        city:
+          type: string
+          description: ciudad de la localización
+      example:
+        id: 1
+        name: Teatro Principal
+        description: Teatro más importante de la ciudad de Zaragoza.
+        category: Teatro
+        disabledAccess: true
     Location:
       allOf:
         - $ref: '#/components/schemas/LocationInDto'

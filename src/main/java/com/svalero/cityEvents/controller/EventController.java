@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/v1")
 public class EventController {
 
     @Autowired
@@ -114,3 +115,4 @@ public class EventController {
         return new ResponseEntity<>(errorResponse,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
+// 45:00

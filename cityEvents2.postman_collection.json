@@ -11,7 +11,7 @@
 			"name": "locations",
 			"item": [
 				{
-					"name": "/locations",
+					"name": "/locations (v1)",
 					"event": [
 						{
 							"listen": "test",
@@ -68,11 +68,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{HOST}}/locations",
+							"raw": "{{HOST}}/api/v1/locations",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"api",
+								"v1",
 								"locations"
 							]
 						}
@@ -80,7 +82,7 @@
 					"response": []
 				},
 				{
-					"name": "/locations/:id",
+					"name": "/locations/:id (v1)",
 					"event": [
 						{
 							"listen": "test",
@@ -121,11 +123,13 @@
 							"raw": "{\n    \"name\": \"Concierto de Extremoduro\",\n    \"description\": \"Un concierto de música Extremoduro en vivo\",\n    \"eventDate\": \"2024-01-16\",\n    \"category\": \"Conncierto\",\n    \"capacity\": 300,\n    \"price\": 50.0,\n    \"availability\": true,\n    \"locationId\": 1,\n    \"artistsId[1]\": 1\n}"
 						},
 						"url": {
-							"raw": "{{HOST}}/locations/{{locationId}}",
+							"raw": "{{HOST}}/api/v1/locations/{{locationId}}",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"api",
+								"v1",
 								"locations",
 								"{{locationId}}"
 							]
@@ -176,11 +180,13 @@
 							"raw": "{\n    \"name\": \"Concierto de Extremoduro\",\n    \"description\": \"Un concierto de música Extremoduro en vivo\",\n    \"eventDate\": \"2024-01-16\",\n    \"category\": \"Conncierto\",\n    \"capacity\": 300,\n    \"price\": 50.0,\n    \"availability\": true,\n    \"locationId\": 1,\n    \"artistsId[1]\": 1\n}"
 						},
 						"url": {
-							"raw": "{{HOST}}/locations/651456",
+							"raw": "{{HOST}}/api/v1/locations/651456",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"api",
+								"v1",
 								"locations",
 								"651456"
 							]
@@ -189,7 +195,7 @@
 					"response": []
 				},
 				{
-					"name": "/locations",
+					"name": "/locations (v2)",
 					"event": [
 						{
 							"listen": "test",
@@ -227,7 +233,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"{{name2}}\",\n    \"description\": \"{{description2}}\",\n    \"category\": \"{{category2}}\",\n    \"streetLocated\": \"{{streetLocated2}}\",\n    \"postalCode\": {{postalCode2}},\n    \"registerDate\": \"{{registerDate2}}\",\n    \"disabledAccess\": {{disabledAccess2}},\n    \"longitude\": {{longitude2}},\n    \"latitude\": {{latitude2}}\n}",
+							"raw": "{\n    \"name\": \"{{name2}}\",\n    \"description\": \"{{description2}}\",\n    \"category\": \"{{category2}}\",\n    \"streetLocated\": \"{{streetLocated2}}\",\n    \"postalCode\": {{postalCode2}},\n    \"registerDate\": \"{{registerDate2}}\",\n    \"disabledAccess\": {{disabledAccess2}},\n    \"longitude\": {{longitude2}},\n    \"latitude\": {{latitude2}},\n    \"city\": \"{{city2}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -235,11 +241,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{HOST}}/locations",
+							"raw": "{{HOST}}/api/v2/locations",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"api",
+								"v2",
 								"locations"
 							]
 						}
@@ -292,11 +300,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{HOST}}/locations",
+							"raw": "{{HOST}}/api/v1/locations",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"api",
+								"v1",
 								"locations"
 							]
 						}
@@ -304,7 +314,7 @@
 					"response": []
 				},
 				{
-					"name": "/locations",
+					"name": "/locations (v1)",
 					"event": [
 						{
 							"listen": "test",
@@ -335,11 +345,13 @@
 							"raw": "{\n    \"name\": \"Concierto de Extremoduro\",\n    \"description\": \"Un concierto de música Extremoduro en vivo\",\n    \"eventDate\": \"2024-01-16\",\n    \"category\": \"Conncierto\",\n    \"capacity\": 300,\n    \"price\": 50.0,\n    \"availability\": true,\n    \"locationId\": 1,\n    \"artistsId[1]\": 1\n}"
 						},
 						"url": {
-							"raw": "{{HOST}}/locations",
+							"raw": "{{HOST}}/api/v1/locations",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"api",
+								"v1",
 								"locations"
 							]
 						}
@@ -347,7 +359,7 @@
 					"response": []
 				},
 				{
-					"name": "/locations/category=:category",
+					"name": "/locations/category=:category (v1)",
 					"event": [
 						{
 							"listen": "test",
@@ -384,11 +396,13 @@
 							"raw": "{\n    \"name\": \"Concierto de Extremoduro\",\n    \"description\": \"Un concierto de música Extremoduro en vivo\",\n    \"eventDate\": \"2024-01-16\",\n    \"category\": \"Conncierto\",\n    \"capacity\": 300,\n    \"price\": 50.0,\n    \"availability\": true,\n    \"locationId\": 1,\n    \"artistsId[1]\": 1\n}"
 						},
 						"url": {
-							"raw": "{{HOST}}/locations?category={{category2}}",
+							"raw": "{{HOST}}/api/v1/locations?category={{category2}}",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"api",
+								"v1",
 								"locations"
 							],
 							"query": [
@@ -435,11 +449,13 @@
 							"raw": "{\n    \"name\": \"Concierto de Extremoduro\",\n    \"description\": \"Un concierto de música Extremoduro en vivo\",\n    \"eventDate\": \"2024-01-16\",\n    \"category\": \"Conncierto\",\n    \"capacity\": 300,\n    \"price\": 50.0,\n    \"availability\": true,\n    \"locationId\": 1,\n    \"artistsId[1]\": 1\n}"
 						},
 						"url": {
-							"raw": "{{HOST}}/locations?category=Deporte",
+							"raw": "{{HOST}}/api/v1/locations?category=Deporte",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"api",
+								"v1",
 								"locations"
 							],
 							"query": [
@@ -453,7 +469,7 @@
 					"response": []
 				},
 				{
-					"name": "/locations/:id",
+					"name": "/locations/:id (v1)",
 					"event": [
 						{
 							"listen": "test",
@@ -506,11 +522,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{HOST}}/locations/{{locationId}}",
+							"raw": "{{HOST}}/api/v1/locations/{{locationId}}",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"api",
+								"v1",
 								"locations",
 								"{{locationId}}"
 							]
@@ -549,11 +567,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/locations?disabledAccess=true",
+							"raw": "{{HOST}}/api/v1/locations?disabledAccess=true",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"api",
+								"v1",
 								"locations"
 							],
 							"query": [
@@ -601,11 +621,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/locations?disabledAccess=null",
+							"raw": "{{HOST}}/api/v1/locations?disabledAccess=null",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"api",
+								"v1",
 								"locations"
 							],
 							"query": [
@@ -653,11 +675,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/locations?postalCode=50002",
+							"raw": "{{HOST}}/api/v1/locations?postalCode=50002",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"api",
+								"v1",
 								"locations"
 							],
 							"query": [
@@ -698,11 +722,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/locations?postalCode=2",
+							"raw": "{{HOST}}/api/v1/locations?postalCode=2",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"api",
+								"v1",
 								"locations"
 							],
 							"query": [
@@ -717,17 +743,34 @@
 				},
 				{
 					"name": "/locations/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code is 204\", () => {",
+									"    pm.expect(pm.response.code).to.eql(204);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
 					"request": {
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/locations//{{locationId}}",
+							"raw": "{{HOST}}/api/v1/locations/{{locationId}}",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"api",
+								"v1",
 								"locations",
-								"",
 								"{{locationId}}"
 							]
 						}
@@ -760,11 +803,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/locations//{{locationId}}",
+							"raw": "{{HOST}}/api/v1/locations//{{locationId}}",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
+								"api",
+								"v1",
 								"locations",
 								"",
 								"{{locationId}}"
@@ -880,6 +925,10 @@
 		{
 			"key": "trueBoolean",
 			"value": "true"
+		},
+		{
+			"key": "city2",
+			"value": "Sevilla"
 		}
 	]
 }

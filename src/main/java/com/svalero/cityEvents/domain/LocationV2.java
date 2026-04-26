@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,9 +16,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "Location")
+@Entity(name = "LocationV2")
 @Table(name = "locations")
-public class Location {
+public class LocationV2 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)   //con esto le decimos que es un valor autonumerico para que se generen los valores de id por sí mismos
     private long id;
@@ -44,6 +45,7 @@ public class Location {
     @Column
     private double latitude;
     @Column
+    @NotBlank(message = "City name is mandatory")
     private String city;
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.REMOVE)

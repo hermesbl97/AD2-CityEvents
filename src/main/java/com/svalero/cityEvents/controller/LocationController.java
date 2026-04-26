@@ -1,8 +1,10 @@
 package com.svalero.cityEvents.controller;
 
 import com.svalero.cityEvents.domain.Location;
+import com.svalero.cityEvents.domain.LocationV2;
 import com.svalero.cityEvents.dto.EventOutDto;
 import com.svalero.cityEvents.dto.LocationOutDto;
+import com.svalero.cityEvents.dto.LocationOutDtoV2;
 import com.svalero.cityEvents.exception.ErrorResponse;
 import com.svalero.cityEvents.exception.LocationNotFoundException;
 import com.svalero.cityEvents.repository.LocationRepository;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api")
 public class LocationController {
 
     @Autowired
@@ -31,7 +34,7 @@ public class LocationController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping("/locations")
+    @GetMapping("/v1/locations")
     public ResponseEntity<List<LocationOutDto>> getALL(
             @RequestParam(value = "category", required = false) String category,
             @RequestParam(value = "disabledAccess", required = false) Boolean disabledAccess,
@@ -42,28 +45,58 @@ public class LocationController {
         return ResponseEntity.ok(allLocationsOutDto);
     }
 
-    @GetMapping("/locations/{id}")
+    @GetMapping("/v2/locations")
+    public ResponseEntity<List<LocationOutDtoV2>> getALLV2(
+            @RequestParam(value = "city", required = false) String city,
+            @RequestParam(value = "disabledAccess", required = false) Boolean disabledAccess,
+            @RequestParam(value = "postalCode", required = false) Integer postalCode) {
+
+        List<LocationOutDtoV2> allLocationsOutDto = locationService.findAllV2(city, disabledAccess, postalCode);
+
+        return ResponseEntity.ok(allLocationsOutDto);
+    }
+
+    @GetMapping("/v1/locations/{id}")
     public ResponseEntity<Location> getLocationById(@PathVariable long id) throws LocationNotFoundException {
         Location location = locationService.findById(id);
         return ResponseEntity.ok(location);
     }
 
-    @PostMapping("/locations")
+    @PostMapping("/v1/locations")
     public ResponseEntity<Location> addLocation(@Valid @RequestBody Location location) { //me pasan el juego que quiero añadir en el body de la llamada
         Location newLocation = locationService.add(location);
         return new ResponseEntity<>(newLocation, HttpStatus.CREATED); //nos devuelve el juego posteado cuando se crea1
     }
 
-    @PutMapping("/locations/{id}")
+    @PostMapping("/v2/locations")
+    public ResponseEntity<LocationV2> addLocationV2(@Valid @RequestBody LocationV2 location) {
+        LocationV2 newLocation = locationService.addV2(location);
+        return new ResponseEntity<>(newLocation, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/v1/locations/{id}")
     public ResponseEntity<Location> modifyLocation(@PathVariable long id, @RequestBody Location location) throws LocationNotFoundException { //usamos el path variable para recoger el id del elemento que queremos modificar en el endpoint
        Location newLocation= locationService.modify(id, location);
 //       return new ResponseEntity<>(newLocation, HttpStatus.OK);   Es identico a la siguiente linea
         return ResponseEntity.ok(newLocation);
     } //cuando se modifica la localización nos la devuelve
 
-    @DeleteMapping("/locations/{id}")
+    @PutMapping("/v2/locations/{id}")
+    public ResponseEntity<LocationV2> modifyLocation(@PathVariable long id, @RequestBody LocationV2 location) throws LocationNotFoundException { //usamos el path variable para recoger el id del elemento que queremos modificar en el endpoint
+        LocationV2 newLocation= locationService.modifyV2(id, location);
+//       return new ResponseEntity<>(newLocation, HttpStatus.OK);   Es identico a la siguiente linea
+        return ResponseEntity.ok(newLocation);
+    }
+
+    @DeleteMapping("/v1/locations/{id}")
     public ResponseEntity<Void> deleteLocation(@PathVariable long id) throws LocationNotFoundException {
         locationService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/v2/locations")
+    public ResponseEntity<Void> deleteLocationV2(@RequestParam(value = "city") String city) {
+        locationService.deleteV2(city);
         return ResponseEntity.noContent().build();
     }
 

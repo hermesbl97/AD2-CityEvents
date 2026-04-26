@@ -1,9 +1,12 @@
 package com.svalero.cityEvents.service;
 
 import com.svalero.cityEvents.domain.Location;
+import com.svalero.cityEvents.domain.LocationV2;
 import com.svalero.cityEvents.dto.LocationOutDto;
+import com.svalero.cityEvents.dto.LocationOutDtoV2;
 import com.svalero.cityEvents.exception.LocationNotFoundException;
 import com.svalero.cityEvents.repository.LocationRepository;
+import com.svalero.cityEvents.repository.LocationRepositoryV2;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +21,16 @@ public class LocationService {
     @Autowired
     private LocationRepository locationRepository; //con el autowired conectamos la capa controller con el repository
     @Autowired
+    private LocationRepositoryV2 locationRepositoryV2;
+    @Autowired
     private ModelMapper modelMapper;
 
     public Location add(Location location){
         return locationRepository.save(location);
+    }
+
+    public LocationV2 addV2(LocationV2 location){
+        return locationRepositoryV2.save(location);
     }
 
     public void delete(long id) throws LocationNotFoundException {
@@ -29,6 +38,10 @@ public class LocationService {
                 .orElseThrow(LocationNotFoundException::new);
 
         locationRepository.delete(location);
+    }
+
+    public void deleteV2(String city) {
+        locationRepositoryV2.deleteByCity(city);
     }
 
     public List<LocationOutDto> findAll(String category, Boolean disabledAccess, Integer postalCode) {
@@ -49,6 +62,24 @@ public class LocationService {
         return locationsOutDto;
     }
 
+    public List<LocationOutDtoV2> findAllV2(String city, Boolean disabledAccess, Integer postalCode) {
+        List<LocationV2> allLocations;
+
+        if (city != null && !city.isEmpty()) {
+            allLocations = locationRepositoryV2.findByCity(city);
+        } else if (disabledAccess != null && disabledAccess){
+            allLocations = locationRepositoryV2.findByDisabledAccessTrue();
+        } else if (postalCode != null) {
+            allLocations = locationRepositoryV2.findByPostalCode(postalCode);
+        } else {
+            allLocations = locationRepositoryV2.findAll();
+        }
+
+        List<LocationOutDtoV2> locationsOutDto = modelMapper.map(allLocations, new TypeToken<List<LocationOutDtoV2>>() {}.getType());
+
+        return locationsOutDto;
+    }
+
     public Location findById(long id) throws  LocationNotFoundException {
         Location location = locationRepository.findById(id)
                 .orElseThrow(LocationNotFoundException::new);
@@ -63,5 +94,16 @@ public class LocationService {
         existingLocation.setId(id); //le definimos el id para que no nos cuele el id 0 de location
 
         return locationRepository.save(existingLocation);
+    }
+
+    public LocationV2 modifyV2(long id, LocationV2 location) throws LocationNotFoundException {
+        LocationV2 existingLocation = locationRepositoryV2.findById(id)
+                .orElseThrow(LocationNotFoundException::new);
+
+        modelMapper.map(location,existingLocation);
+        existingLocation.setId(id); //le definimos el id para que no nos cuele el id 0 de location
+        existingLocation.setDisabledAccess(true);
+
+        return locationRepositoryV2.save(existingLocation);
     }
 }
