@@ -3,6 +3,7 @@ package com.svalero.cityEvents.service;
 import com.svalero.cityEvents.domain.Location;
 import com.svalero.cityEvents.domain.LocationV2;
 import com.svalero.cityEvents.dto.LocationOutDto;
+import com.svalero.cityEvents.dto.LocationOutDtoV2;
 import com.svalero.cityEvents.exception.LocationNotFoundException;
 import com.svalero.cityEvents.repository.LocationRepository;
 import com.svalero.cityEvents.repository.LocationRepositoryV2;
@@ -53,6 +54,24 @@ public class LocationService {
         }
 
         List<LocationOutDto> locationsOutDto = modelMapper.map(allLocations, new TypeToken<List<LocationOutDto>>() {}.getType());
+
+        return locationsOutDto;
+    }
+
+    public List<LocationOutDtoV2> findAllV2(String category, Boolean disabledAccess, Integer postalCode) {
+        List<LocationV2> allLocations;
+
+        if (category != null && !category.isEmpty()) {
+            allLocations = locationRepositoryV2.findByCategory(category);
+        } else if (disabledAccess != null && disabledAccess){
+            allLocations = locationRepositoryV2.findByDisabledAccessTrue();
+        } else if (postalCode != null) {
+            allLocations = locationRepositoryV2.findByPostalCode(postalCode);
+        } else {
+            allLocations = locationRepositoryV2.findAll();
+        }
+
+        List<LocationOutDtoV2> locationsOutDto = modelMapper.map(allLocations, new TypeToken<List<LocationOutDtoV2>>() {}.getType());
 
         return locationsOutDto;
     }

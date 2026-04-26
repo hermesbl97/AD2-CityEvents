@@ -4,6 +4,7 @@ import com.svalero.cityEvents.domain.Location;
 import com.svalero.cityEvents.domain.LocationV2;
 import com.svalero.cityEvents.dto.EventOutDto;
 import com.svalero.cityEvents.dto.LocationOutDto;
+import com.svalero.cityEvents.dto.LocationOutDtoV2;
 import com.svalero.cityEvents.exception.ErrorResponse;
 import com.svalero.cityEvents.exception.LocationNotFoundException;
 import com.svalero.cityEvents.repository.LocationRepository;
@@ -40,6 +41,17 @@ public class LocationController {
             @RequestParam(value = "postalCode", required = false) Integer postalCode) { //indicamos que queremos que filtre por category la busqueda con el Request param
 
         List<LocationOutDto> allLocationsOutDto = locationService.findAll(category, disabledAccess, postalCode);
+
+        return ResponseEntity.ok(allLocationsOutDto);
+    }
+
+    @GetMapping("/v2/locations")
+    public ResponseEntity<List<LocationOutDtoV2>> getALLV2(
+            @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "disabledAccess", required = false) Boolean disabledAccess,
+            @RequestParam(value = "postalCode", required = false) Integer postalCode) {
+
+        List<LocationOutDtoV2> allLocationsOutDto = locationService.findAllV2(category, disabledAccess, postalCode);
 
         return ResponseEntity.ok(allLocationsOutDto);
     }
