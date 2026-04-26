@@ -17,6 +17,6 @@ jobs:
       - run: mvn package
       - run: docker build -t city-events2-api .
       - run: docker compose up -d
-      - run: sleep 3
+      - run: sleep 20
       - run: npm install -g newman
       - run: newman run cityEvents2.postman_collection.json -e pruebas.postman_environment.json
