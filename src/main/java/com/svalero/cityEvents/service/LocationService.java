@@ -1,9 +1,11 @@
 package com.svalero.cityEvents.service;
 
 import com.svalero.cityEvents.domain.Location;
+import com.svalero.cityEvents.domain.LocationV2;
 import com.svalero.cityEvents.dto.LocationOutDto;
 import com.svalero.cityEvents.exception.LocationNotFoundException;
 import com.svalero.cityEvents.repository.LocationRepository;
+import com.svalero.cityEvents.repository.LocationRepositoryV2;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +20,16 @@ public class LocationService {
     @Autowired
     private LocationRepository locationRepository; //con el autowired conectamos la capa controller con el repository
     @Autowired
+    private LocationRepositoryV2 locationRepositoryV2;
+    @Autowired
     private ModelMapper modelMapper;
 
     public Location add(Location location){
         return locationRepository.save(location);
+    }
+
+    public LocationV2 addV2(LocationV2 location){
+        return locationRepositoryV2.save(location);
     }
 
     public void delete(long id) throws LocationNotFoundException {
