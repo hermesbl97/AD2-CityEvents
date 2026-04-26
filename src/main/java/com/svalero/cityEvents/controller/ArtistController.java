@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api")
 public class ArtistController {
 
     @Autowired
@@ -26,7 +27,7 @@ public class ArtistController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @GetMapping("/artists")
+    @GetMapping("/v1/artists")
     public ResponseEntity<List<ArtistOutDto>> getAll (
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "active", required = false) Boolean active,
@@ -37,26 +38,26 @@ public class ArtistController {
         return ResponseEntity.ok(allArtists);
     }
 
-    @GetMapping("/artists/{id}")
+    @GetMapping("/v1/artists/{id}")
     public ResponseEntity<Artist> getArtistById(@PathVariable long id) throws ArtistNotFoundException {
         Artist artist = artistService.findArtistById(id);
         return ResponseEntity.ok(artist);
     }
 
-    @PostMapping("/artists")
+    @PostMapping("/v1/artists")
     public ResponseEntity<Artist> addArtist(@Valid @RequestBody Artist artist) {
         Artist newArtist = artistService.add(artist);
         return new ResponseEntity<>(newArtist, HttpStatus.CREATED);
     }
 
-    @PutMapping("/artists/{id}")
+    @PutMapping("/v1/artists/{id}")
     public ResponseEntity<Artist> modifyArtist(@PathVariable long id, @RequestBody Artist artist)
             throws ArtistNotFoundException {
         Artist newArtist = artistService.modify(id, artist);
         return ResponseEntity.ok(newArtist);
     }
 
-    @DeleteMapping("/artists/{id}")
+    @DeleteMapping("/v1/artists/{id}")
     public ResponseEntity<Void> deleteArtist(@PathVariable long id) throws ArtistNotFoundException {
         artistService.delete(id);
         return ResponseEntity.noContent().build();

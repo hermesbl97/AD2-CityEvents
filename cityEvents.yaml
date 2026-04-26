@@ -4,9 +4,9 @@ info:
   description: API informativa de los eventos de tu ciudad.
   version: 1.0.0
 servers:
-  - url: 'https://cityEvents.com'
+  - url: 'https://cityEvents.com/api'
 paths:
-  /events:
+  /v1/events:
     get:
       summary: Lista de eventos
       description: | 
@@ -68,7 +68,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /events/{id}:
+  /v1/events/{id}:
     get:
       summary: Vista de un evento
       description: Devuelve la vista mucho más detallada de un evento en concreto. Búsqueda filtrada por Id
@@ -157,7 +157,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /locations:
+  /v1/locations:
     get:
       summary: Lista de localizaciones
       description: |
@@ -213,7 +213,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /locations/{id}:
+  /v1/locations/{id}:
     get:
       summary: Vista de una localización
       description: Devuelve la vista mucho más detallada de una localización en concreto. Búsqueda filtrada por Id
@@ -302,7 +302,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /artists:
+  /v1/artists:
     get:
       summary: Lista de artistas
       description: |
@@ -364,7 +364,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /artists/{id}:
+  /v1/artists/{id}:
     get:
       summary: Vista de un artista
       description: Devuelve la vista mucho más detallada de un artista en concreto. Búsqueda filtrada por Id
@@ -453,7 +453,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /reviews:
+  /v1/reviews:
     get:
       summary: Lista de reseñas.
       description: |
@@ -515,7 +515,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /reviews/{id}:
+  /v1/reviews/{id}:
     get:
       summary: Vista de una reseña
       description: Devuelve la vista mucho más detallada de una reseña en concreto. Búsqueda filtrada por Id
@@ -604,7 +604,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /users:
+  /v1/users:
     get:
       summary: Lista de usuarios
       description: |
@@ -666,7 +666,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InternalServerError'
-  /users/{id}:
+  /v1/users/{id}:
     get:
       summary: Vista de un usuario
       description: Devuelve la vista mucho más detallada de un usuario en concreto. Búsqueda filtrada por Id
