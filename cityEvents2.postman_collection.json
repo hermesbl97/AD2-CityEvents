@@ -359,6 +359,44 @@
 					"response": []
 				},
 				{
+					"name": "/locations (v2)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has two items\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(2);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v2/locations",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"locations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/locations/category=:category (v1)",
 					"event": [
 						{
@@ -462,6 +500,63 @@
 								{
 									"key": "category",
 									"value": "Deporte"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/locations/city=:city (v2)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(1);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].name).eql(pm.collectionVariables.get(\"name2\"));",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Concierto de Extremoduro\",\n    \"description\": \"Un concierto de música Extremoduro en vivo\",\n    \"eventDate\": \"2024-01-16\",\n    \"category\": \"Conncierto\",\n    \"capacity\": 300,\n    \"price\": 50.0,\n    \"availability\": true,\n    \"locationId\": 1,\n    \"artistsId[1]\": 1\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v2/locations?city={{city2}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"locations"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "{{city2}}"
 								}
 							]
 						}
@@ -778,6 +873,177 @@
 					"response": []
 				},
 				{
+					"name": "/locations (v2)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"    const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"description\");",
+									"    pm.expect(jsonResponse).to.have.property(\"category\");",
+									"    pm.expect(jsonResponse).to.have.property(\"streetLocated\");",
+									"    pm.expect(jsonResponse).to.have.property(\"postalCode\");",
+									"    pm.expect(jsonResponse).to.have.property(\"registerDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"disabledAccess\");",
+									"    pm.expect(jsonResponse).to.have.property(\"longitude\");",
+									"    pm.expect(jsonResponse).to.have.property(\"latitude\");",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"locationId\", jsonResponse.id); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name2}}\",\n    \"description\": \"{{description2}}\",\n    \"category\": \"{{category2}}\",\n    \"streetLocated\": \"{{streetLocated2}}\",\n    \"postalCode\": {{postalCode2}},\n    \"registerDate\": \"{{registerDate2}}\",\n    \"disabledAccess\": {{disabledAccess2}},\n    \"longitude\": {{longitude2}},\n    \"latitude\": {{latitude2}},\n    \"city\": \"{{$randomCity}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v2/locations",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"locations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/locations/:id (v2)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"description\");",
+									"    pm.expect(jsonResponse).to.have.property(\"category\");",
+									"    pm.expect(jsonResponse).to.have.property(\"streetLocated\");",
+									"    pm.expect(jsonResponse).to.have.property(\"postalCode\");",
+									"    pm.expect(jsonResponse).to.have.property(\"registerDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"disabledAccess\");",
+									"    pm.expect(jsonResponse).to.have.property(\"longitude\");",
+									"    pm.expect(jsonResponse).to.have.property(\"latitude\");",
+									"    pm.expect(jsonResponse).to.have.property(\"city\");",
+									"});",
+									"",
+									"pm.test(\"longitude and latitude are numbers\", () => {",
+									"    pm.expect(pm.response.json().longitude).to.be.a('number');",
+									"    pm.expect(pm.response.json().latitude).to.be.a('number');",
+									"});",
+									"",
+									"pm.test(\"data has changed\", () => {",
+									"    pm.expect(jsonResponse.disabledAccess).eql(pm.collectionVariables.get(\"trueBoolean\") === \"true\");",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name2}}\",\n    \"description\": \"{{description2}}\",\n    \"category\": \"{{category2}}\",\n    \"streetLocated\": \"{{streetLocated2}}\",\n    \"postalCode\": {{postalCode2}},\n    \"registerDate\": \"{{registerDate2}}\",\n    \"disabledAccess\": {{trueBoolean}},\n    \"longitude\": {{longitude2}},\n    \"latitude\": {{latitude2}},\n    \"city\": \"{{city2}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v2/locations/{{locationId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"locations",
+								"{{locationId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/locations?city=:city (v2)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code is 204\", () => {",
+									"    pm.expect(pm.response.code).to.eql(204);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v2/locations?city={{city2}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"locations"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "{{city2}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/locations/:id (404)",
 					"event": [
 						{
@@ -819,6 +1085,748 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "artists",
+			"item": [
+				{
+					"name": "/artists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"surname\");",
+									"    pm.expect(jsonResponse).to.have.property(\"genre\");",
+									"    pm.expect(jsonResponse).to.have.property(\"birthDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"type\");",
+									"    pm.expect(jsonResponse).to.have.property(\"followers\");",
+									"    pm.expect(jsonResponse).to.have.property(\"height\");",
+									"    pm.expect(jsonResponse).to.have.property(\"active\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.name).to.be.a('string');",
+									"    pm.expect(jsonResponse.surname).to.be.a('string');",
+									"    pm.expect(jsonResponse.genre).to.be.a('string');",
+									"    pm.expect(jsonResponse.birthDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.type).to.be.a('string');",
+									"    pm.expect(jsonResponse.followers).to.be.a('number');",
+									"    pm.expect(jsonResponse.height).to.be.a('number')",
+									"    pm.expect(jsonResponse.active).to.be.a('boolean')",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"artistId\", jsonResponse.id); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name3}}\",\n    \"surname\": \"{{surname3}}\",\n    \"genre\": \"{{genre3}}\",\n    \"birthDate\": \"{{birthdate3}}\",\n    \"type\": \"{{type3}}\",\n    \"followers\": \"{{followers3}}\",\n    \"height\": \"{{height3}}\",\n    \"active\": \"{{active3}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(1);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    const jsonResponse = pm.response.json();",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"surname\");",
+									"    pm.expect(jsonResponse).to.have.property(\"genre\");",
+									"    pm.expect(jsonResponse).to.have.property(\"birthDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"type\");",
+									"    pm.expect(jsonResponse).to.have.property(\"followers\");",
+									"    pm.expect(jsonResponse).to.have.property(\"height\");",
+									"    pm.expect(jsonResponse).to.have.property(\"active\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists/{{artistId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists",
+								"{{artistId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists/:id (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 404\", () => {",
+									"    pm.expect(pm.response.code).to.eql(404);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(404);",
+									"    pm.expect(jsonResponse.title).eql(\"not-found\");",
+									"        pm.expect(jsonResponse.message).eql(\"The artist does not exist\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists/4561631",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists",
+								"4561631"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"surname\");",
+									"    pm.expect(jsonResponse).to.have.property(\"genre\");",
+									"    pm.expect(jsonResponse).to.have.property(\"birthDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"type\");",
+									"    pm.expect(jsonResponse).to.have.property(\"followers\");",
+									"    pm.expect(jsonResponse).to.have.property(\"height\");",
+									"    pm.expect(jsonResponse).to.have.property(\"active\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.name).to.be.a('string');",
+									"    pm.expect(jsonResponse.surname).to.be.a('string');",
+									"    pm.expect(jsonResponse.genre).to.be.a('string');",
+									"    pm.expect(jsonResponse.birthDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.type).to.be.a('string');",
+									"    pm.expect(jsonResponse.followers).to.be.a('number');",
+									"    pm.expect(jsonResponse.height).to.be.a('number')",
+									"    pm.expect(jsonResponse.active).to.be.a('boolean')",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"artistId\", jsonResponse.id); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{$randomFirstName}}\",\n    \"surname\": \"{{$randomLastName}}\",\n    \"genre\": \"{{genre4}}\",\n    \"birthDate\": \"{{birthDate4}}\",\n    \"type\": \"{{type4}}\",\n    \"followers\": \"{{followers4}}\",\n    \"height\": \"{{height4}}\",\n    \"active\": {{active4}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists?type=:type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(1);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].id).to.equal(2);",
+									"    pm.expect(jsonResponse[0].followers).to.equal(2125641);",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists?type=Deportista",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "Deportista"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists?type=:type (no data)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has no items\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(0);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists?type=Bailarin",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "Bailarin"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"surname\");",
+									"    pm.expect(jsonResponse).to.have.property(\"genre\");",
+									"    pm.expect(jsonResponse).to.have.property(\"height\");",
+									"    pm.expect(jsonResponse).to.have.property(\"birthDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"type\");",
+									"    pm.expect(jsonResponse).to.have.property(\"followers\");",
+									"});",
+									"",
+									"pm.test(\"data has changed\", () => {",
+									"    pm.expect(jsonResponse.active).eql(true);",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name3}}\",\n    \"surname\": \"{{surname3}}\",\n    \"genre\": \"{{genre3}}\",\n    \"birthDate\": \"{{birthdate3}}\",\n    \"type\": \"{{type3}}\",\n    \"followers\": {{followers3}},\n    \"height\": {{height3}},\n    \"active\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists/1",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists/:id (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 404\", () => {",
+									"    pm.expect(pm.response.code).to.eql(404);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(404);",
+									"    pm.expect(jsonResponse.title).eql(\"not-found\");",
+									"        pm.expect(jsonResponse.message).eql(\"The artist does not exist\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name3}}\",\n    \"surname\": \"{{surname3}}\",\n    \"genre\": \"{{genre3}}\",\n    \"birthDate\": \"{{birthdate3}}\",\n    \"type\": \"{{type3}}\",\n    \"followers\": {{followers3}},\n    \"height\": {{height3}},\n    \"active\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists/156",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists",
+								"156"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists?active=true",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(2);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists?active=true",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							],
+							"query": [
+								{
+									"key": "active",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists?orderByFollowers=true",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(2);",
+									"});",
+									"",
+									"pm.test(\"first item has id 2\", () => {",
+									"    pm.expect(jsonResponse[0].id).to.equal(2);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists?orderByFollowers=true",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							],
+							"query": [
+								{
+									"key": "orderByFollowers",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists (400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 400\", () => {",
+									"    pm.expect(pm.response.code).to.eql(400);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(400);",
+									"    pm.expect(jsonResponse.title).eql(\"bad-request\");",
+									"    pm.expect(jsonResponse.message).eql(\"Validation error\")",
+									"    pm.expect(jsonResponse.errors.surname).eql(\"Surname is mandatory\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{$randomFirstName}}\",\n    \"genre\": \"{{genre4}}\",\n    \"birthDate\": \"{{birthDate4}}\",\n    \"type\": \"{{type4}}\",\n    \"followers\": \"{{followers4}}\",\n    \"height\": \"{{height4}}\",\n    \"active\": {{active4}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code is 204\", () => {",
+									"    pm.expect(pm.response.code).to.eql(204);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists/{{artistId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists",
+								"{{artistId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists/:id (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 404\", () => {",
+									"    pm.expect(pm.response.code).to.eql(404);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(404);",
+									"    pm.expect(jsonResponse.title).eql(\"not-found\");",
+									"    pm.expect(jsonResponse.message).eql(\"The artist does not exist\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{$randomFirstName}}\",\n    \"genre\": \"{{genre4}}\",\n    \"birthDate\": \"{{birthDate4}}\",\n    \"type\": \"{{type4}}\",\n    \"followers\": \"{{followers4}}\",\n    \"height\": \"{{height4}}\",\n    \"active\": {{active4}}\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists/16",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists",
+								"16"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -848,7 +1856,7 @@
 	"variable": [
 		{
 			"key": "locationId",
-			"value": "1"
+			"value": 1
 		},
 		{
 			"key": "name1",
@@ -929,6 +1937,70 @@
 		{
 			"key": "city2",
 			"value": "Sevilla"
+		},
+		{
+			"key": "name3",
+			"value": "Joaquin"
+		},
+		{
+			"key": "surname3",
+			"value": "Sabina"
+		},
+		{
+			"key": "genre3",
+			"value": "Hombre"
+		},
+		{
+			"key": "birthdate3",
+			"value": "1949-02-12"
+		},
+		{
+			"key": "type3",
+			"value": "Cantante"
+		},
+		{
+			"key": "followers3",
+			"value": "1232526"
+		},
+		{
+			"key": "height3",
+			"value": "1.77"
+		},
+		{
+			"key": "active3",
+			"value": "false"
+		},
+		{
+			"key": "type4",
+			"value": "Deportista"
+		},
+		{
+			"key": "genre4",
+			"value": "Femenino"
+		},
+		{
+			"key": "followers4",
+			"value": "2125641"
+		},
+		{
+			"key": "birthDate4",
+			"value": "2001-11-05"
+		},
+		{
+			"key": "height4",
+			"value": "1.70"
+		},
+		{
+			"key": "active4",
+			"value": "true"
+		},
+		{
+			"key": "artistId",
+			"value": 2
+		},
+		{
+			"key": "name",
+			"value": ""
 		}
 	]
 }
