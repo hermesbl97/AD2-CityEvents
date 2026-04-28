@@ -3177,6 +3177,117 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "/event/:id (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 404\", () => {",
+									"    pm.expect(pm.response.code).to.eql(404);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(404);",
+									"    pm.expect(jsonResponse.title).eql(\"not-found\");",
+									"    pm.expect(jsonResponse.message).eql(\"The event does not exist\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name6}}\",\n    \"description\": \"{{$randomLoremSentence}}\",\n    \"eventDate\": \"{{eventDate5}}\",\n    \"category\": \"{{category6}}\",\n    \"capacity\": {{capacity5}},\n    \"price\": {{price6}},\n    \"availability\": false,\n    \"locationId\": 1,\n    \"artistsIds\": [1]\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/events/2",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events?locationName=:locationName",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has three items\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(2);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[1].id).to.equal(3);",
+									"    pm.expect(jsonResponse[0].name).to.equal(\"Concierto de Extremoduro\");",
+									"    pm.expect(jsonResponse[1].name).to.equal(\"Mayumana\");",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/events?locationName={{name1}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							],
+							"query": [
+								{
+									"key": "locationName",
+									"value": "{{name1}}"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
