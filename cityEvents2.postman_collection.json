@@ -2552,6 +2552,633 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "events",
+			"item": [
+				{
+					"name": "/events",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"description\");",
+									"    pm.expect(jsonResponse).to.have.property(\"eventDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"category\");",
+									"    pm.expect(jsonResponse).to.have.property(\"capacity\");",
+									"    pm.expect(jsonResponse).to.have.property(\"price\");",
+									"    pm.expect(jsonResponse).to.have.property(\"availability\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.name).to.be.a('string');",
+									"    pm.expect(jsonResponse.description).to.be.a('string');",
+									"    pm.expect(jsonResponse.eventDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.category).to.be.a('string');",
+									"    pm.expect(jsonResponse.availability).to.be.a('boolean');",
+									"    pm.expect(jsonResponse.capacity).to.be.a('number');",
+									"    pm.expect(jsonResponse.price).to.be.a('number');",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"eventId\", jsonResponse.id); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name5}}\",\n    \"description\": \"{{description5}}\",\n    \"eventDate\": \"{{eventDate5}}\",\n    \"category\": \"{{category5}}\",\n    \"capacity\": {{capacity5}},\n    \"price\": {{price5}},\n    \"locationId\": 1,\n    \"artistsIds\": [1]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/events",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"description\");",
+									"    pm.expect(jsonResponse).to.have.property(\"category\");",
+									"    pm.expect(jsonResponse).to.have.property(\"eventDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"capacity\");",
+									"    pm.expect(jsonResponse).to.have.property(\"price\");",
+									"    pm.expect(jsonResponse).to.have.property(\"availability\");",
+									"    pm.expect(jsonResponse).to.have.property(\"location\");",
+									"});",
+									"",
+									"pm.test(\"id is a number\", () => {",
+									"    pm.expect(pm.response.json().id).eql(1);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(pm.response.json().name).to.eql('Concierto de Extremoduro');",
+									"    pm.expect(pm.response.json().capacity).to.eql(3000);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/events/{{eventId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{eventId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"description\");",
+									"    pm.expect(jsonResponse).to.have.property(\"eventDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"category\");",
+									"    pm.expect(jsonResponse).to.have.property(\"capacity\");",
+									"    pm.expect(jsonResponse).to.have.property(\"price\");",
+									"    pm.expect(jsonResponse).to.have.property(\"availability\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.name).to.be.a('string');",
+									"    pm.expect(jsonResponse.description).to.be.a('string');",
+									"    pm.expect(jsonResponse.eventDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.category).to.be.a('string');",
+									"    pm.expect(jsonResponse.availability).to.be.a('boolean');",
+									"    pm.expect(jsonResponse.capacity).to.be.a('number');",
+									"    pm.expect(jsonResponse.price).to.be.a('number');",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"eventId\", jsonResponse.id); ",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse.category).to.equal(\"Teatro\");",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{$randomFirstName}}\",\n    \"description\": \"{{$randomLoremSentence}}\",\n    \"eventDate\": \"{{eventDate5}}\",\n    \"category\": \"{{category6}}\",\n    \"capacity\": {{capacity5}},\n    \"price\": {{$randomPrice}},\n    \"locationId\": 1,\n    \"artistsIds\": [2]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/events",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"description\");",
+									"    pm.expect(jsonResponse).to.have.property(\"eventDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"category\");",
+									"    pm.expect(jsonResponse).to.have.property(\"capacity\");",
+									"    pm.expect(jsonResponse).to.have.property(\"price\");",
+									"    pm.expect(jsonResponse).to.have.property(\"availability\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.name).to.be.a('string');",
+									"    pm.expect(jsonResponse.description).to.be.a('string');",
+									"    pm.expect(jsonResponse.eventDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.category).to.be.a('string');",
+									"    pm.expect(jsonResponse.availability).to.be.a('boolean');",
+									"    pm.expect(jsonResponse.capacity).to.be.a('number');",
+									"    pm.expect(jsonResponse.price).to.be.a('number');",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"eventId\", jsonResponse.id); ",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse.name).to.equal(\"Mayumana\");",
+									"    pm.expect(jsonResponse.category).to.equal(\"Teatro\");",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name6}}\",\n    \"description\": \"{{$randomLoremSentence}}\",\n    \"eventDate\": \"{{eventDate5}}\",\n    \"category\": \"{{category6}}\",\n    \"capacity\": {{capacity5}},\n    \"price\": {{price6}},\n    \"locationId\": 1,\n    \"artistsIds\": [1]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/events",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events?category=:category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has three items\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(2);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].id).to.equal(2);",
+									"    pm.expect(jsonResponse[1].name).to.equal(\"Mayumana\");",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/events?category=Teatro",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "Teatro"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events (400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 400\", () => {",
+									"    pm.expect(pm.response.code).to.eql(400);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(400);",
+									"    pm.expect(jsonResponse.title).eql(\"bad-request\");",
+									"    pm.expect(jsonResponse.message).eql(\"Validation error\")",
+									"    pm.expect(jsonResponse.errors.name).eql(\"Name is mandatory\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"{{$randomLoremSentence}}\",\n    \"eventDate\": \"{{eventDate5}}\",\n    \"category\": \"{{category6}}\",\n    \"capacity\": {{capacity5}},\n    \"price\": {{$randomPrice}},\n    \"locationId\": 1,\n    \"artistsIds\": [1]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/events",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has two items\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(3);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/events",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code is 204\", () => {",
+									"    pm.expect(pm.response.code).to.eql(204);",
+									"});",
+									"",
+									"pm.test(\"response body is empty\", () => {",
+									"    pm.expect(pm.response.text()).to.eql(\"\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/events/2",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 404\", () => {",
+									"    pm.expect(pm.response.code).to.eql(404);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(404);",
+									"    pm.expect(jsonResponse.title).eql(\"not-found\");",
+									"    pm.expect(jsonResponse.message).eql(\"The event does not exist\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/events/2",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events?price=:price",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has three items\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(1);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].id).to.equal(3);",
+									"    pm.expect(jsonResponse[0].name).to.equal(\"Mayumana\");",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/events?price=40",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							],
+							"query": [
+								{
+									"key": "price",
+									"value": "40"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/event/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"description\");",
+									"    pm.expect(jsonResponse).to.have.property(\"category\");",
+									"    pm.expect(jsonResponse).to.have.property(\"capacity\");",
+									"    pm.expect(jsonResponse).to.have.property(\"eventDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"price\");",
+									"    pm.expect(jsonResponse).to.have.property(\"availability\");",
+									"    pm.expect(jsonResponse).to.have.property(\"location\");",
+									"    pm.expect(jsonResponse).to.have.property(\"artists\");",
+									"});",
+									"",
+									"pm.test(\"data has changed\", () => {",
+									"    pm.expect(jsonResponse.availability).eql(false);",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name6}}\",\n    \"description\": \"{{$randomLoremSentence}}\",\n    \"eventDate\": \"{{eventDate5}}\",\n    \"category\": \"{{category6}}\",\n    \"capacity\": {{capacity5}},\n    \"price\": {{price6}},\n    \"availability\": false,\n    \"locationId\": 1,\n    \"artistsIds\": [1]\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/events/{{eventId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{eventId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -2733,12 +3360,51 @@
 		},
 		{
 			"key": "usuarioId",
-			"value": 2
+			"value": 3
 		},
 		{
 			"key": "name4",
-			"value": "Sofia",
-			"type": "default"
+			"value": "Sofia"
+		},
+		{
+			"key": "name5",
+			"value": "Concierto de Extremoduro"
+		},
+		{
+			"key": "description5",
+			"value": "Concierto gira despedida del grupo Extremoduro"
+		},
+		{
+			"key": "eventDate5",
+			"value": "2026-06-03"
+		},
+		{
+			"key": "category5",
+			"value": "Concierto"
+		},
+		{
+			"key": "capacity5",
+			"value": "3000"
+		},
+		{
+			"key": "price5",
+			"value": "60"
+		},
+		{
+			"key": "eventId",
+			"value": 3
+		},
+		{
+			"key": "name6",
+			"value": "Mayumana"
+		},
+		{
+			"key": "category6",
+			"value": "Teatro"
+		},
+		{
+			"key": "price6",
+			"value": "30"
 		}
 	]
 }
