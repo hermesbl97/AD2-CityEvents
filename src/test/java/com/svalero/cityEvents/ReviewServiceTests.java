@@ -1,10 +1,7 @@
 package com.svalero.cityEvents;
 
 import com.svalero.cityEvents.domain.*;
-import com.svalero.cityEvents.dto.EventInDto;
-import com.svalero.cityEvents.dto.EventOutDto;
-import com.svalero.cityEvents.dto.ReviewInDto;
-import com.svalero.cityEvents.dto.ReviewOutDto;
+import com.svalero.cityEvents.dto.*;
 import com.svalero.cityEvents.exception.EventNotFoundException;
 import com.svalero.cityEvents.exception.ReviewNotFoundException;
 import com.svalero.cityEvents.repository.ReviewRepository;
@@ -18,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -215,17 +213,20 @@ public class ReviewServiceTests {
     @Test
     public void testModifyReview() throws ReviewNotFoundException {
 
+        User user = new User();
+        Event event = new Event();
+
         Review existingReview = new Review();
         existingReview.setRate(4.1f);
         existingReview.setId(45);
 
-        Review updatingReview = new Review();
+        ReviewModifyInDto updatingReview = new ReviewModifyInDto();
         updatingReview.setRate(3.5f);
 
         when(reviewRepository.findById(45L)).thenReturn(Optional.of(existingReview));
         when(reviewRepository.save(existingReview)).thenReturn(existingReview);
 
-        reviewService.modify(45L, updatingReview);
+        reviewService.modify(45L, updatingReview, user, event);
 
         verify(modelMapper).map(updatingReview,existingReview);
         verify(reviewRepository).save(existingReview);
@@ -234,11 +235,14 @@ public class ReviewServiceTests {
     @Test
     public void testModifyReviewNotFound() {
 
-        Review review = new Review();
+        User user = new User();
+        Event event = new Event();
+
+        ReviewModifyInDto review = new ReviewModifyInDto();
 
         when(reviewRepository.findById(15L)).thenReturn(Optional.empty());
 
-        assertThrows(ReviewNotFoundException.class, () -> reviewService.modify(15L, review));
+        assertThrows(ReviewNotFoundException.class, () -> reviewService.modify(15L, review, user, event));
 
         verify(reviewRepository, times(1)).findById(15L);
         verify(reviewRepository, never()).save(any(Review.class));

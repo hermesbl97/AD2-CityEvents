@@ -359,6 +359,44 @@
 					"response": []
 				},
 				{
+					"name": "/locations (v2)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has two items\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(2);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v2/locations",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"locations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/locations/category=:category (v1)",
 					"event": [
 						{
@@ -462,6 +500,63 @@
 								{
 									"key": "category",
 									"value": "Deporte"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/locations/city=:city (v2)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(1);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].name).eql(pm.collectionVariables.get(\"name2\"));",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Concierto de Extremoduro\",\n    \"description\": \"Un concierto de música Extremoduro en vivo\",\n    \"eventDate\": \"2024-01-16\",\n    \"category\": \"Conncierto\",\n    \"capacity\": 300,\n    \"price\": 50.0,\n    \"availability\": true,\n    \"locationId\": 1,\n    \"artistsId[1]\": 1\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v2/locations?city={{city2}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"locations"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "{{city2}}"
 								}
 							]
 						}
@@ -778,6 +873,177 @@
 					"response": []
 				},
 				{
+					"name": "/locations (v2)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"    const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"description\");",
+									"    pm.expect(jsonResponse).to.have.property(\"category\");",
+									"    pm.expect(jsonResponse).to.have.property(\"streetLocated\");",
+									"    pm.expect(jsonResponse).to.have.property(\"postalCode\");",
+									"    pm.expect(jsonResponse).to.have.property(\"registerDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"disabledAccess\");",
+									"    pm.expect(jsonResponse).to.have.property(\"longitude\");",
+									"    pm.expect(jsonResponse).to.have.property(\"latitude\");",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"locationId\", jsonResponse.id); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name2}}\",\n    \"description\": \"{{description2}}\",\n    \"category\": \"{{category2}}\",\n    \"streetLocated\": \"{{streetLocated2}}\",\n    \"postalCode\": {{postalCode2}},\n    \"registerDate\": \"{{registerDate2}}\",\n    \"disabledAccess\": {{disabledAccess2}},\n    \"longitude\": {{longitude2}},\n    \"latitude\": {{latitude2}},\n    \"city\": \"{{$randomCity}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v2/locations",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"locations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/locations/:id (v2)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"description\");",
+									"    pm.expect(jsonResponse).to.have.property(\"category\");",
+									"    pm.expect(jsonResponse).to.have.property(\"streetLocated\");",
+									"    pm.expect(jsonResponse).to.have.property(\"postalCode\");",
+									"    pm.expect(jsonResponse).to.have.property(\"registerDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"disabledAccess\");",
+									"    pm.expect(jsonResponse).to.have.property(\"longitude\");",
+									"    pm.expect(jsonResponse).to.have.property(\"latitude\");",
+									"    pm.expect(jsonResponse).to.have.property(\"city\");",
+									"});",
+									"",
+									"pm.test(\"longitude and latitude are numbers\", () => {",
+									"    pm.expect(pm.response.json().longitude).to.be.a('number');",
+									"    pm.expect(pm.response.json().latitude).to.be.a('number');",
+									"});",
+									"",
+									"pm.test(\"data has changed\", () => {",
+									"    pm.expect(jsonResponse.disabledAccess).eql(pm.collectionVariables.get(\"trueBoolean\") === \"true\");",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name2}}\",\n    \"description\": \"{{description2}}\",\n    \"category\": \"{{category2}}\",\n    \"streetLocated\": \"{{streetLocated2}}\",\n    \"postalCode\": {{postalCode2}},\n    \"registerDate\": \"{{registerDate2}}\",\n    \"disabledAccess\": {{trueBoolean}},\n    \"longitude\": {{longitude2}},\n    \"latitude\": {{latitude2}},\n    \"city\": \"{{city2}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v2/locations/{{locationId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"locations",
+								"{{locationId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/locations?city=:city (v2)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code is 204\", () => {",
+									"    pm.expect(pm.response.code).to.eql(204);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v2/locations?city={{city2}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"locations"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "{{city2}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/locations/:id (404)",
 					"event": [
 						{
@@ -819,6 +1085,2879 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "artists",
+			"item": [
+				{
+					"name": "/artists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"surname\");",
+									"    pm.expect(jsonResponse).to.have.property(\"genre\");",
+									"    pm.expect(jsonResponse).to.have.property(\"birthDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"type\");",
+									"    pm.expect(jsonResponse).to.have.property(\"followers\");",
+									"    pm.expect(jsonResponse).to.have.property(\"height\");",
+									"    pm.expect(jsonResponse).to.have.property(\"active\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.name).to.be.a('string');",
+									"    pm.expect(jsonResponse.surname).to.be.a('string');",
+									"    pm.expect(jsonResponse.genre).to.be.a('string');",
+									"    pm.expect(jsonResponse.birthDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.type).to.be.a('string');",
+									"    pm.expect(jsonResponse.followers).to.be.a('number');",
+									"    pm.expect(jsonResponse.height).to.be.a('number')",
+									"    pm.expect(jsonResponse.active).to.be.a('boolean')",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"artistId\", jsonResponse.id); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name3}}\",\n    \"surname\": \"{{surname3}}\",\n    \"genre\": \"{{genre3}}\",\n    \"birthDate\": \"{{birthdate3}}\",\n    \"type\": \"{{type3}}\",\n    \"followers\": \"{{followers3}}\",\n    \"height\": \"{{height3}}\",\n    \"active\": \"{{active3}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(1);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    const jsonResponse = pm.response.json();",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"surname\");",
+									"    pm.expect(jsonResponse).to.have.property(\"genre\");",
+									"    pm.expect(jsonResponse).to.have.property(\"birthDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"type\");",
+									"    pm.expect(jsonResponse).to.have.property(\"followers\");",
+									"    pm.expect(jsonResponse).to.have.property(\"height\");",
+									"    pm.expect(jsonResponse).to.have.property(\"active\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists/{{artistId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists",
+								"{{artistId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists/:id (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 404\", () => {",
+									"    pm.expect(pm.response.code).to.eql(404);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(404);",
+									"    pm.expect(jsonResponse.title).eql(\"not-found\");",
+									"        pm.expect(jsonResponse.message).eql(\"The artist does not exist\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists/4561631",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists",
+								"4561631"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"surname\");",
+									"    pm.expect(jsonResponse).to.have.property(\"genre\");",
+									"    pm.expect(jsonResponse).to.have.property(\"birthDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"type\");",
+									"    pm.expect(jsonResponse).to.have.property(\"followers\");",
+									"    pm.expect(jsonResponse).to.have.property(\"height\");",
+									"    pm.expect(jsonResponse).to.have.property(\"active\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.name).to.be.a('string');",
+									"    pm.expect(jsonResponse.surname).to.be.a('string');",
+									"    pm.expect(jsonResponse.genre).to.be.a('string');",
+									"    pm.expect(jsonResponse.birthDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.type).to.be.a('string');",
+									"    pm.expect(jsonResponse.followers).to.be.a('number');",
+									"    pm.expect(jsonResponse.height).to.be.a('number')",
+									"    pm.expect(jsonResponse.active).to.be.a('boolean')",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"artistId\", jsonResponse.id); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{$randomFirstName}}\",\n    \"surname\": \"{{$randomLastName}}\",\n    \"genre\": \"{{genre4}}\",\n    \"birthDate\": \"{{birthDate4}}\",\n    \"type\": \"{{type4}}\",\n    \"followers\": \"{{followers4}}\",\n    \"height\": \"{{height4}}\",\n    \"active\": {{active4}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists?type=:type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(1);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].id).to.equal(2);",
+									"    pm.expect(jsonResponse[0].followers).to.equal(2125641);",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists?type=Deportista",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "Deportista"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists?type=:type (no data)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has no items\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(0);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists?type=Bailarin",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "Bailarin"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"surname\");",
+									"    pm.expect(jsonResponse).to.have.property(\"genre\");",
+									"    pm.expect(jsonResponse).to.have.property(\"height\");",
+									"    pm.expect(jsonResponse).to.have.property(\"birthDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"type\");",
+									"    pm.expect(jsonResponse).to.have.property(\"followers\");",
+									"});",
+									"",
+									"pm.test(\"data has changed\", () => {",
+									"    pm.expect(jsonResponse.active).eql(true);",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name3}}\",\n    \"surname\": \"{{surname3}}\",\n    \"genre\": \"{{genre3}}\",\n    \"birthDate\": \"{{birthdate3}}\",\n    \"type\": \"{{type3}}\",\n    \"followers\": {{followers3}},\n    \"height\": {{height3}},\n    \"active\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists/1",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists/:id (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 404\", () => {",
+									"    pm.expect(pm.response.code).to.eql(404);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(404);",
+									"    pm.expect(jsonResponse.title).eql(\"not-found\");",
+									"        pm.expect(jsonResponse.message).eql(\"The artist does not exist\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name3}}\",\n    \"surname\": \"{{surname3}}\",\n    \"genre\": \"{{genre3}}\",\n    \"birthDate\": \"{{birthdate3}}\",\n    \"type\": \"{{type3}}\",\n    \"followers\": {{followers3}},\n    \"height\": {{height3}},\n    \"active\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists/156",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists",
+								"156"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists?active=true",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(2);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists?active=true",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							],
+							"query": [
+								{
+									"key": "active",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists?orderByFollowers=true",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(2);",
+									"});",
+									"",
+									"pm.test(\"first item has id 2\", () => {",
+									"    pm.expect(jsonResponse[0].id).to.equal(2);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists?orderByFollowers=true",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							],
+							"query": [
+								{
+									"key": "orderByFollowers",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists (400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 400\", () => {",
+									"    pm.expect(pm.response.code).to.eql(400);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(400);",
+									"    pm.expect(jsonResponse.title).eql(\"bad-request\");",
+									"    pm.expect(jsonResponse.message).eql(\"Validation error\")",
+									"    pm.expect(jsonResponse.errors.surname).eql(\"Surname is mandatory\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{$randomFirstName}}\",\n    \"genre\": \"{{genre4}}\",\n    \"birthDate\": \"{{birthDate4}}\",\n    \"type\": \"{{type4}}\",\n    \"followers\": \"{{followers4}}\",\n    \"height\": \"{{height4}}\",\n    \"active\": {{active4}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code is 204\", () => {",
+									"    pm.expect(pm.response.code).to.eql(204);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists/{{artistId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists",
+								"{{artistId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/artists/:id (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 404\", () => {",
+									"    pm.expect(pm.response.code).to.eql(404);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(404);",
+									"    pm.expect(jsonResponse.title).eql(\"not-found\");",
+									"    pm.expect(jsonResponse.message).eql(\"The artist does not exist\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{$randomFirstName}}\",\n    \"genre\": \"{{genre4}}\",\n    \"birthDate\": \"{{birthDate4}}\",\n    \"type\": \"{{type4}}\",\n    \"followers\": \"{{followers4}}\",\n    \"height\": \"{{height4}}\",\n    \"active\": {{active4}}\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/artists/16",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"artists",
+								"16"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "usuarios",
+			"item": [
+				{
+					"name": "/usuarios",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"username\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"surname\");",
+									"    pm.expect(jsonResponse).to.have.property(\"birthDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"telephoneNumber\");",
+									"    pm.expect(jsonResponse).to.have.property(\"active\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.username).to.be.a('string');",
+									"    pm.expect(jsonResponse.name).to.be.a('string');",
+									"    pm.expect(jsonResponse.surname).to.be.a('string');",
+									"    pm.expect(jsonResponse.birthDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.telephoneNumber).to.be.a('number')",
+									"    pm.expect(jsonResponse.active).to.be.a('boolean')",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"usuarioId\", jsonResponse.id); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"name\": \"{{$randomFirstName}}\",\n    \"surname\": \"{{$randomLastName}}\",\n    \"birthDate\": \"{{birthdate3}}\",\n    \"telephoneNumber\": {{telephoneNumber}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/usuarios",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usuarios/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    const jsonResponse = pm.response.json();",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"username\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"surname\");",
+									"    pm.expect(jsonResponse).to.have.property(\"birthDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"telephoneNumber\");",
+									"    pm.expect(jsonResponse).to.have.property(\"active\");",
+									"});",
+									"",
+									"pm.test(\"id is a number\", () => {",
+									"    pm.expect(pm.response.json().id).eql(1);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/usuarios/{{usuarioId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios",
+								"{{usuarioId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usuarios/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code is 204\", () => {",
+									"    pm.expect(pm.response.code).to.eql(204);",
+									"});",
+									"",
+									"pm.test(\"response body is empty\", () => {",
+									"    pm.expect(pm.response.text()).to.eql(\"\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/usuarios/{{usuarioId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios",
+								"{{usuarioId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usuarios",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"username\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"surname\");",
+									"    pm.expect(jsonResponse).to.have.property(\"birthDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"telephoneNumber\");",
+									"    pm.expect(jsonResponse).to.have.property(\"active\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.username).to.be.a('string');",
+									"    pm.expect(jsonResponse.name).to.be.a('string');",
+									"    pm.expect(jsonResponse.surname).to.be.a('string');",
+									"    pm.expect(jsonResponse.birthDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.telephoneNumber).to.be.a('number')",
+									"    pm.expect(jsonResponse.active).to.be.a('boolean')",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"usuarioId\", jsonResponse.id); ",
+									"",
+									"pm.test(\"body contains the username\", () => {",
+									"    pm.expect(jsonResponse.username).eql(\"joaquin123\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{username}}\",\n    \"name\": \"{{name3}}\",\n    \"surname\": \"{{surname3}}\",\n    \"birthDate\": \"{{birthdate3}}\",\n    \"telephoneNumber\": {{telephoneNumber}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/usuarios",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usuarios/:id (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 404\", () => {",
+									"    pm.expect(pm.response.code).to.eql(404);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(404);",
+									"    pm.expect(jsonResponse.title).eql(\"not-found\");",
+									"    pm.expect(jsonResponse.message).eql(\"The user does not exist\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/usuarios/4",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usuarios",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"username\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"surname\");",
+									"    pm.expect(jsonResponse).to.have.property(\"birthDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"telephoneNumber\");",
+									"    pm.expect(jsonResponse).to.have.property(\"active\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.username).to.be.a('string');",
+									"    pm.expect(jsonResponse.name).to.be.a('string');",
+									"    pm.expect(jsonResponse.surname).to.be.a('string');",
+									"    pm.expect(jsonResponse.birthDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.telephoneNumber).to.be.a('number')",
+									"    pm.expect(jsonResponse.active).to.be.a('boolean')",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"usuarioId\", jsonResponse.id); ",
+									"",
+									"pm.test(\"body contains the name\", () => {",
+									"    pm.expect(jsonResponse.name).eql(\"Sofia\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"name\": \"{{name4}}\",\n    \"surname\": \"{{$randomLastName}}\",\n    \"birthDate\": \"{{birthDate4}}\",\n    \"telephoneNumber\": {{telephoneNumber}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/usuarios",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usuarios (400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 400\", () => {",
+									"    pm.expect(pm.response.code).to.eql(400);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(400);",
+									"    pm.expect(jsonResponse.title).eql(\"bad-request\");",
+									"    pm.expect(jsonResponse.message).eql(\"Validation error\")",
+									"    pm.expect(jsonResponse.errors.surname).eql(\"The surname is mandatory\")",
+									"    pm.expect(jsonResponse.errors.name).eql(\"Name is mandatory\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"birthDate\": \"{{birthDate4}}\",\n    \"telephoneNumber\": {{telephoneNumber}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/usuarios",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usuarios/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"username\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"surname\");",
+									"    pm.expect(jsonResponse).to.have.property(\"birthDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"telephoneNumber\");",
+									"    pm.expect(jsonResponse).to.have.property(\"active\");",
+									"});",
+									"",
+									"pm.test(\"data has changed\", () => {",
+									"    pm.expect(jsonResponse.active).eql(false);",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"name\": \"{{name4}}\",\n    \"surname\": \"{{$randomLastName}}\",\n    \"birthDate\": \"{{birthDate4}}\",\n    \"telephoneNumber\": \"{{telephoneNumber}}\",\n    \"active\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/usuarios/{{usuarioId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios",
+								"{{usuarioId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usuarios/:id (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 404\", () => {",
+									"    pm.expect(pm.response.code).to.eql(404);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(404);",
+									"    pm.expect(jsonResponse.title).eql(\"not-found\");",
+									"    pm.expect(jsonResponse.message).eql(\"The user does not exist\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{$randomUserName}}\",\n    \"name\": \"{{name4}}\",\n    \"surname\": \"{{$randomLastName}}\",\n    \"birthDate\": \"{{birthDate4}}\",\n    \"telephoneNumber\": \"{{telephoneNumber}}\",\n    \"active\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/usuarios/16",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios",
+								"16"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usuarios",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has two items\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(2);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{username}}\",\n    \"name\": \"{{name3}}\",\n    \"surname\": \"{{surname3}}\",\n    \"birthDate\": \"{{birthdate3}}\",\n    \"telephoneNumber\": {{telephoneNumber}}\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/usuarios",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usuarios?name=:name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(1);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].id).to.equal(3);",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/usuarios?name={{name4}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "{{name4}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usuarios?birthDate=:birthDate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(2);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[1].id).to.equal(3);",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/usuarios?birthDate=2015-02-01",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios"
+							],
+							"query": [
+								{
+									"key": "birthDate",
+									"value": "2015-02-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usuarios?active=:active",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(1);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].id).to.equal(3);",
+									"    pm.expect(jsonResponse[0].birthDate).eql('2001-11-05');",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/usuarios?active=true",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"usuarios"
+							],
+							"query": [
+								{
+									"key": "active",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "events",
+			"item": [
+				{
+					"name": "/events",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"description\");",
+									"    pm.expect(jsonResponse).to.have.property(\"eventDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"category\");",
+									"    pm.expect(jsonResponse).to.have.property(\"capacity\");",
+									"    pm.expect(jsonResponse).to.have.property(\"price\");",
+									"    pm.expect(jsonResponse).to.have.property(\"availability\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.name).to.be.a('string');",
+									"    pm.expect(jsonResponse.description).to.be.a('string');",
+									"    pm.expect(jsonResponse.eventDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.category).to.be.a('string');",
+									"    pm.expect(jsonResponse.availability).to.be.a('boolean');",
+									"    pm.expect(jsonResponse.capacity).to.be.a('number');",
+									"    pm.expect(jsonResponse.price).to.be.a('number');",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"eventId\", jsonResponse.id); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name5}}\",\n    \"description\": \"{{description5}}\",\n    \"eventDate\": \"{{eventDate5}}\",\n    \"category\": \"{{category5}}\",\n    \"capacity\": {{capacity5}},\n    \"price\": {{price5}},\n    \"locationId\": 1,\n    \"artistsIds\": [1]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/events",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"description\");",
+									"    pm.expect(jsonResponse).to.have.property(\"category\");",
+									"    pm.expect(jsonResponse).to.have.property(\"eventDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"capacity\");",
+									"    pm.expect(jsonResponse).to.have.property(\"price\");",
+									"    pm.expect(jsonResponse).to.have.property(\"availability\");",
+									"    pm.expect(jsonResponse).to.have.property(\"location\");",
+									"});",
+									"",
+									"pm.test(\"id is a number\", () => {",
+									"    pm.expect(pm.response.json().id).eql(1);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(pm.response.json().name).to.eql('Concierto de Extremoduro');",
+									"    pm.expect(pm.response.json().capacity).to.eql(3000);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/events/{{eventId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{eventId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"description\");",
+									"    pm.expect(jsonResponse).to.have.property(\"eventDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"category\");",
+									"    pm.expect(jsonResponse).to.have.property(\"capacity\");",
+									"    pm.expect(jsonResponse).to.have.property(\"price\");",
+									"    pm.expect(jsonResponse).to.have.property(\"availability\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.name).to.be.a('string');",
+									"    pm.expect(jsonResponse.description).to.be.a('string');",
+									"    pm.expect(jsonResponse.eventDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.category).to.be.a('string');",
+									"    pm.expect(jsonResponse.availability).to.be.a('boolean');",
+									"    pm.expect(jsonResponse.capacity).to.be.a('number');",
+									"    pm.expect(jsonResponse.price).to.be.a('number');",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"eventId\", jsonResponse.id); ",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse.category).to.equal(\"Teatro\");",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{$randomFirstName}}\",\n    \"description\": \"{{$randomLoremSentence}}\",\n    \"eventDate\": \"{{eventDate5}}\",\n    \"category\": \"{{category6}}\",\n    \"capacity\": {{capacity5}},\n    \"price\": {{$randomPrice}},\n    \"locationId\": 1,\n    \"artistsIds\": [2]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/events",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"description\");",
+									"    pm.expect(jsonResponse).to.have.property(\"eventDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"category\");",
+									"    pm.expect(jsonResponse).to.have.property(\"capacity\");",
+									"    pm.expect(jsonResponse).to.have.property(\"price\");",
+									"    pm.expect(jsonResponse).to.have.property(\"availability\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.name).to.be.a('string');",
+									"    pm.expect(jsonResponse.description).to.be.a('string');",
+									"    pm.expect(jsonResponse.eventDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.category).to.be.a('string');",
+									"    pm.expect(jsonResponse.availability).to.be.a('boolean');",
+									"    pm.expect(jsonResponse.capacity).to.be.a('number');",
+									"    pm.expect(jsonResponse.price).to.be.a('number');",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"eventId\", jsonResponse.id); ",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse.name).to.equal(\"Mayumana\");",
+									"    pm.expect(jsonResponse.category).to.equal(\"Teatro\");",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name6}}\",\n    \"description\": \"{{$randomLoremSentence}}\",\n    \"eventDate\": \"{{eventDate5}}\",\n    \"category\": \"{{category6}}\",\n    \"capacity\": {{capacity5}},\n    \"price\": {{price6}},\n    \"locationId\": 1,\n    \"artistsIds\": [1]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/events",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events?category=:category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has three items\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(2);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].id).to.equal(2);",
+									"    pm.expect(jsonResponse[1].name).to.equal(\"Mayumana\");",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/events?category=Teatro",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "Teatro"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events (400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 400\", () => {",
+									"    pm.expect(pm.response.code).to.eql(400);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(400);",
+									"    pm.expect(jsonResponse.title).eql(\"bad-request\");",
+									"    pm.expect(jsonResponse.message).eql(\"Validation error\")",
+									"    pm.expect(jsonResponse.errors.name).eql(\"Name is mandatory\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"{{$randomLoremSentence}}\",\n    \"eventDate\": \"{{eventDate5}}\",\n    \"category\": \"{{category6}}\",\n    \"capacity\": {{capacity5}},\n    \"price\": {{$randomPrice}},\n    \"locationId\": 1,\n    \"artistsIds\": [1]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/events",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has two items\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(3);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/events",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code is 204\", () => {",
+									"    pm.expect(pm.response.code).to.eql(204);",
+									"});",
+									"",
+									"pm.test(\"response body is empty\", () => {",
+									"    pm.expect(pm.response.text()).to.eql(\"\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/events/2",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 404\", () => {",
+									"    pm.expect(pm.response.code).to.eql(404);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(404);",
+									"    pm.expect(jsonResponse.title).eql(\"not-found\");",
+									"    pm.expect(jsonResponse.message).eql(\"The event does not exist\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/events/2",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events?price=:price",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has three items\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(1);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].id).to.equal(3);",
+									"    pm.expect(jsonResponse[0].name).to.equal(\"Mayumana\");",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/events?price=40",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							],
+							"query": [
+								{
+									"key": "price",
+									"value": "40"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/event/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"name\");",
+									"    pm.expect(jsonResponse).to.have.property(\"description\");",
+									"    pm.expect(jsonResponse).to.have.property(\"category\");",
+									"    pm.expect(jsonResponse).to.have.property(\"capacity\");",
+									"    pm.expect(jsonResponse).to.have.property(\"eventDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"price\");",
+									"    pm.expect(jsonResponse).to.have.property(\"availability\");",
+									"    pm.expect(jsonResponse).to.have.property(\"location\");",
+									"    pm.expect(jsonResponse).to.have.property(\"artists\");",
+									"});",
+									"",
+									"pm.test(\"data has changed\", () => {",
+									"    pm.expect(jsonResponse.availability).eql(false);",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name6}}\",\n    \"description\": \"{{$randomLoremSentence}}\",\n    \"eventDate\": \"{{eventDate5}}\",\n    \"category\": \"{{category6}}\",\n    \"capacity\": {{capacity5}},\n    \"price\": {{price6}},\n    \"availability\": false,\n    \"locationId\": 1,\n    \"artistsIds\": [1]\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/events/{{eventId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{eventId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/event/:id (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 404\", () => {",
+									"    pm.expect(pm.response.code).to.eql(404);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(404);",
+									"    pm.expect(jsonResponse.title).eql(\"not-found\");",
+									"    pm.expect(jsonResponse.message).eql(\"The event does not exist\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{name6}}\",\n    \"description\": \"{{$randomLoremSentence}}\",\n    \"eventDate\": \"{{eventDate5}}\",\n    \"category\": \"{{category6}}\",\n    \"capacity\": {{capacity5}},\n    \"price\": {{price6}},\n    \"availability\": false,\n    \"locationId\": 1,\n    \"artistsIds\": [1]\n    \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/events/2",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/events?locationName=:locationName",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has three items\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(2);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[1].id).to.equal(3);",
+									"    pm.expect(jsonResponse[0].name).to.equal(\"Concierto de Extremoduro\");",
+									"    pm.expect(jsonResponse[1].name).to.equal(\"Mayumana\");",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/events?locationName={{name1}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							],
+							"query": [
+								{
+									"key": "locationName",
+									"value": "{{name1}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "reviews",
+			"item": [
+				{
+					"name": "/reviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"rate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"comment\");",
+									"    pm.expect(jsonResponse).to.have.property(\"registerDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"event\");",
+									"    pm.expect(jsonResponse).to.have.property(\"user\");",
+									"    pm.expect(jsonResponse).to.have.property(\"likes\");",
+									"    pm.expect(jsonResponse).to.have.property(\"visible\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.rate).to.be.a('number');",
+									"    pm.expect(jsonResponse.comment).to.be.a('string');",
+									"    pm.expect(jsonResponse.registerDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.visible).to.be.a('boolean');",
+									"    pm.expect(jsonResponse.likes).to.be.a('number');",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"reviewId\", jsonResponse.id); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"recommend\": true,\n    \"rate\": {{rate1}},\n    \"comment\": \"{{$randomPhrase}}\",\n    \"registerDate\": \"{{registerDate1}}\",\n    \"eventId\": 3,\n    \"userId\": 2\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews(400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 400\", () => {",
+									"    pm.expect(pm.response.code).to.eql(400);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(400);",
+									"    pm.expect(jsonResponse.title).eql(\"bad-request\");",
+									"    pm.expect(jsonResponse.message).eql(\"Validation error\")",
+									"    pm.expect(jsonResponse.errors.rate).eql(\"The rate must be at least 1\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"recommend\": true,\n    \"comment\": \"{{$randomPhrase}}\",\n    \"registerDate\": \"{{registerDate1}}\",\n    \"eventId\": 3,\n    \"userId\": 2\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"rate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"comment\");",
+									"    pm.expect(jsonResponse).to.have.property(\"registerDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"event\");",
+									"    pm.expect(jsonResponse).to.have.property(\"user\");",
+									"    pm.expect(jsonResponse).to.have.property(\"likes\");",
+									"    pm.expect(jsonResponse).to.have.property(\"visible\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.rate).to.be.a('number');",
+									"    pm.expect(jsonResponse.comment).to.be.a('string');",
+									"    pm.expect(jsonResponse.registerDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.visible).to.be.a('boolean');",
+									"    pm.expect(jsonResponse.likes).to.be.a('number');",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"reviewId\", jsonResponse.id); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"recommend\": false,\n    \"rate\": {{rate2}},\n    \"comment\": \"{{comment}}\",\n    \"registerDate\": \"{{registerDate2}}\",\n    \"eventId\": 1,\n    \"userId\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews/:id (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 404\", () => {",
+									"    pm.expect(pm.response.code).to.eql(404);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(404);",
+									"    pm.expect(jsonResponse.title).eql(\"not-found\");",
+									"    pm.expect(jsonResponse.message).eql(\"The review does not exist\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"recommend\": false,\n    \"rate\": {{rate2}},\n    \"comment\": \"{{comment}}\",\n    \"registerDate\": \"{{registerDate2}}\",\n    \"likes\": 689,\n    \"visible\": true,\n    \"eventId\": 1,\n    \"userId\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews/10",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has two items\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(2);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].rate).to.equal(4);",
+									"    pm.expect(jsonResponse[1].rate).to.equal(2);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"rate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"comment\");",
+									"    pm.expect(jsonResponse).to.have.property(\"registerDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"visible\");",
+									"    pm.expect(jsonResponse).to.have.property(\"likes\");",
+									"    pm.expect(jsonResponse).to.have.property(\"recommend\");",
+									"    pm.expect(jsonResponse).to.have.property(\"event\");",
+									"    pm.expect(jsonResponse).to.have.property(\"user\");",
+									"});",
+									"",
+									"pm.test(\"data has changed\", () => {",
+									"    pm.expect(jsonResponse.likes).eql(689);",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"recommend\": false,\n    \"rate\": {{rate2}},\n    \"comment\": \"{{comment}}\",\n    \"registerDate\": \"{{registerDate2}}\",\n    \"likes\": 689,\n    \"visible\": true,\n    \"eventId\": 1,\n    \"userId\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews/{{reviewId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"{{reviewId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews?username=:username",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(1);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].rate).to.equal(4);",
+									"    pm.expect(jsonResponse[0].recommend).to.equal(true);",
+									"})",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews?username=joaquin123",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "joaquin123"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews?eventName=:eventName",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(1);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].rate).to.equal(2);",
+									"    pm.expect(jsonResponse[0].recommend).to.equal(false);",
+									"})",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews?eventName=Concierto de Extremoduro",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "eventName",
+									"value": "Concierto de Extremoduro"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"rate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"comment\");",
+									"    pm.expect(jsonResponse).to.have.property(\"visible\");",
+									"    pm.expect(jsonResponse).to.have.property(\"registerDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"likes\");",
+									"    pm.expect(jsonResponse).to.have.property(\"recommend\");",
+									"    pm.expect(jsonResponse).to.have.property(\"event\");",
+									"    pm.expect(jsonResponse).to.have.property(\"user\");",
+									"});",
+									"",
+									"pm.test(\"id is a number\", () => {",
+									"    pm.expect(pm.response.json().id).eql(2);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(pm.response.json().rate).to.eql(2);",
+									"    pm.expect(pm.response.json().event.id).to.eql(1);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews/{{reviewId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"{{reviewId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code is 204\", () => {",
+									"    pm.expect(pm.response.code).to.eql(204);",
+									"});",
+									"",
+									"pm.test(\"response body is empty\", () => {",
+									"    pm.expect(pm.response.text()).to.eql(\"\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews/{{reviewId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"{{reviewId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews?rate=:rate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(1);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].rate).to.equal(4);",
+									"    pm.expect(jsonResponse[0].recommend).to.equal(true);",
+									"})",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews?rate=3.5",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "rate",
+									"value": "3.5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews/:id (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 404\", () => {",
+									"    pm.expect(pm.response.code).to.eql(404);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(404);",
+									"    pm.expect(jsonResponse.title).eql(\"not-found\");",
+									"    pm.expect(jsonResponse.message).eql(\"The review does not exist\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews/{{reviewId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"{{reviewId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -848,7 +3987,7 @@
 	"variable": [
 		{
 			"key": "locationId",
-			"value": "1"
+			"value": 3
 		},
 		{
 			"key": "name1",
@@ -929,6 +4068,138 @@
 		{
 			"key": "city2",
 			"value": "Sevilla"
+		},
+		{
+			"key": "name3",
+			"value": "Joaquin"
+		},
+		{
+			"key": "surname3",
+			"value": "Sabina"
+		},
+		{
+			"key": "genre3",
+			"value": "Hombre"
+		},
+		{
+			"key": "birthdate3",
+			"value": "1949-02-12"
+		},
+		{
+			"key": "type3",
+			"value": "Cantante"
+		},
+		{
+			"key": "followers3",
+			"value": "1232526"
+		},
+		{
+			"key": "height3",
+			"value": "1.77"
+		},
+		{
+			"key": "active3",
+			"value": "false"
+		},
+		{
+			"key": "type4",
+			"value": "Deportista"
+		},
+		{
+			"key": "genre4",
+			"value": "Femenino"
+		},
+		{
+			"key": "followers4",
+			"value": "2125641"
+		},
+		{
+			"key": "birthDate4",
+			"value": "2001-11-05"
+		},
+		{
+			"key": "height4",
+			"value": "1.70"
+		},
+		{
+			"key": "active4",
+			"value": "true"
+		},
+		{
+			"key": "artistId",
+			"value": 2
+		},
+		{
+			"key": "username",
+			"value": "joaquin123"
+		},
+		{
+			"key": "telephoneNumber",
+			"value": "654256312"
+		},
+		{
+			"key": "usuarioId",
+			"value": 3
+		},
+		{
+			"key": "name4",
+			"value": "Sofia"
+		},
+		{
+			"key": "name5",
+			"value": "Concierto de Extremoduro"
+		},
+		{
+			"key": "description5",
+			"value": "Concierto gira despedida del grupo Extremoduro"
+		},
+		{
+			"key": "eventDate5",
+			"value": "2026-06-03"
+		},
+		{
+			"key": "category5",
+			"value": "Concierto"
+		},
+		{
+			"key": "capacity5",
+			"value": "3000"
+		},
+		{
+			"key": "price5",
+			"value": "60"
+		},
+		{
+			"key": "eventId",
+			"value": 3
+		},
+		{
+			"key": "name6",
+			"value": "Mayumana"
+		},
+		{
+			"key": "category6",
+			"value": "Teatro"
+		},
+		{
+			"key": "price6",
+			"value": "30"
+		},
+		{
+			"key": "rate1",
+			"value": "4"
+		},
+		{
+			"key": "reviewId",
+			"value": ""
+		},
+		{
+			"key": "rate2",
+			"value": "2"
+		},
+		{
+			"key": "comment",
+			"value": "No me ha gustado nada"
 		}
 	]
 }

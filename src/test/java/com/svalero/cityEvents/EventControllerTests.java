@@ -7,6 +7,7 @@ import com.svalero.cityEvents.domain.Artist;
 import com.svalero.cityEvents.domain.Event;
 import com.svalero.cityEvents.domain.Location;
 import com.svalero.cityEvents.dto.EventInDto;
+import com.svalero.cityEvents.dto.EventModifyInDto;
 import com.svalero.cityEvents.dto.EventOutDto;
 import com.svalero.cityEvents.exception.EventNotFoundException;
 import com.svalero.cityEvents.exception.LocationNotFoundException;
@@ -249,11 +250,17 @@ public class EventControllerTests {
         Event eventRequest = new Event();
         eventRequest.setName("Evento");
 
+        Location locationRequest = new Location();
+        List<Artist> artistsRequest = new ArrayList<>();
+
+
         Event eventResponse = new Event();
         eventResponse.setId(1L);
         eventResponse.setName("Evento actualizado");
 
-        when(eventService.modify(eq(1L), any(Event.class))).thenReturn(eventResponse);
+        when(locationService.findById(1L)).thenReturn(locationRequest);
+        when(artistService.findAllArtistsById(anyList())).thenReturn(artistsRequest);
+        when(eventService.modify(eq(1L), any(EventModifyInDto.class), eq(locationRequest), eq(artistsRequest))).thenReturn(eventResponse);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/events/1")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -266,15 +273,26 @@ public class EventControllerTests {
         Event response = objectMapper.readValue(jsonResponse, new TypeReference<>() {});
 
         assertEquals("Evento actualizado", response.getName());
-        verify(eventService, times(1)).modify(eq(1L),any(Event.class));
+        verify(eventService, times(1)).modify(eq(1L),any(EventModifyInDto.class), eq(locationRequest), eq(artistsRequest));
     }
 
     @Test
     public void testModifyEventNotFound() throws Exception {
+
+        EventModifyInDto modifyDto = new EventModifyInDto("Concierto", "Desc", LocalDate.now(),
+                "Música", 100, 20.0f, true, 1L, List.of(1L));
+
+        Location mockLocation = new Location();
+        List<Artist> mockArtists = new ArrayList<>();
+
         Event eventRequest = new Event();
         eventRequest.setName("Evento inexistente");
 
-        when(eventService.modify(eq(2L), any(Event.class))).thenThrow(new EventNotFoundException());
+
+        when(locationService.findById(2L)).thenReturn(mockLocation);
+        when(artistService.findAllArtistsById(anyList())).thenReturn(mockArtists);
+
+        when(eventService.modify(eq(2L), any(EventModifyInDto.class), eq(mockLocation), eq(mockArtists))).thenThrow(new EventNotFoundException());
 
         mockMvc.perform(MockMvcRequestBuilders.put("/events/2")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -282,7 +300,7 @@ public class EventControllerTests {
                         .content(objectMapper.writeValueAsString(eventRequest)))
                         .andExpect(status().isNotFound());
 
-        verify(eventService, times(1)).modify(eq(2L), any(Event.class));
+        verify(eventService, times(1)).modify(eq(2L), any(EventModifyInDto.class), eq(mockLocation), eq(mockArtists));
     }
 
     @Test

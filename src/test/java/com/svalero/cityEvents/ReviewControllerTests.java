@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svalero.cityEvents.controller.ReviewController;
 import com.svalero.cityEvents.domain.*;
-import com.svalero.cityEvents.dto.EventInDto;
-import com.svalero.cityEvents.dto.EventOutDto;
-import com.svalero.cityEvents.dto.ReviewInDto;
-import com.svalero.cityEvents.dto.ReviewOutDto;
+import com.svalero.cityEvents.dto.*;
 import com.svalero.cityEvents.exception.EventNotFoundException;
 import com.svalero.cityEvents.exception.LocationNotFoundException;
 import com.svalero.cityEvents.exception.ReviewNotFoundException;
@@ -261,14 +258,18 @@ public class ReviewControllerTests {
 
     @Test
     public void testModifyReview() throws Exception {
-        Review reviewRequest = new Review();
+
+        User user = new User();
+        Event event = new Event();
+
+        ReviewModifyInDto reviewRequest = new ReviewModifyInDto();
         reviewRequest.setRate(3.2f);
 
         Review reviewResponse = new Review();
         reviewResponse.setId(15L);
         reviewResponse.setRate(4.0f);
 
-        when(reviewService.modify(eq(15L), any(Review.class))).thenReturn(reviewResponse);
+        when(reviewService.modify(eq(15L), any(ReviewModifyInDto.class), any(User.class), any(Event.class))).thenReturn(reviewResponse);
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/reviews/15")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -281,15 +282,15 @@ public class ReviewControllerTests {
         Review response = objectMapper.readValue(jsonResponse, new TypeReference<>() {});
 
         assertEquals(4.0f, response.getRate());
-        verify(reviewService, times(1)).modify(eq(15L),any(Review.class));
+        verify(reviewService, times(1)).modify(eq(15L),any(ReviewModifyInDto.class), any(User.class) ,any(Event.class));
     }
 
     @Test
     public void testModifyReviewNotFound() throws Exception {
-        Review reviewRequest = new Review();
+        ReviewModifyInDto reviewRequest = new ReviewModifyInDto();
         reviewRequest.setRate(3.8f);
 
-        when(reviewService.modify(eq(15L), any(Review.class))).thenThrow(new ReviewNotFoundException());
+        when(reviewService.modify(eq(15L), any(ReviewModifyInDto.class), any(User.class), any(Event.class))).thenThrow(new ReviewNotFoundException());
 
         mockMvc.perform(MockMvcRequestBuilders.put("/reviews/15")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -297,7 +298,7 @@ public class ReviewControllerTests {
                         .content(objectMapper.writeValueAsString(reviewRequest)))
                         .andExpect(status().isNotFound());
 
-        verify(reviewService, times(1)).modify(eq(15L), any(Review.class));
+        verify(reviewService, times(1)).modify(eq(15L), any(ReviewModifyInDto.class),  any(User.class), any(Event.class));
     }
 
     @Test
