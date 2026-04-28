@@ -3179,6 +3179,223 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "reviews",
+			"item": [
+				{
+					"name": "/reviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"rate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"comment\");",
+									"    pm.expect(jsonResponse).to.have.property(\"registerDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"event\");",
+									"    pm.expect(jsonResponse).to.have.property(\"user\");",
+									"    pm.expect(jsonResponse).to.have.property(\"likes\");",
+									"    pm.expect(jsonResponse).to.have.property(\"visible\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.rate).to.be.a('number');",
+									"    pm.expect(jsonResponse.comment).to.be.a('string');",
+									"    pm.expect(jsonResponse.registerDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.visible).to.be.a('boolean');",
+									"    pm.expect(jsonResponse.likes).to.be.a('number');",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"reviewId\", jsonResponse.id); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"recommend\": true,\n    \"rate\": {{rate1}},\n    \"comment\": \"{{$randomPhrase}}\",\n    \"registerDate\": \"{{registerDate1}}\",\n    \"eventId\": 3,\n    \"userId\": 2\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has two items\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(2);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].rate).to.equal(4);",
+									"    pm.expect(jsonResponse[1].rate).to.equal(2);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"rate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"comment\");",
+									"    pm.expect(jsonResponse).to.have.property(\"registerDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"visible\");",
+									"    pm.expect(jsonResponse).to.have.property(\"likes\");",
+									"    pm.expect(jsonResponse).to.have.property(\"recommend\");",
+									"    pm.expect(jsonResponse).to.have.property(\"event\");",
+									"    pm.expect(jsonResponse).to.have.property(\"user\");",
+									"});",
+									"",
+									"pm.test(\"data has changed\", () => {",
+									"    pm.expect(jsonResponse.likes).eql(689);",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"recommend\": false,\n    \"rate\": {{rate2}},\n    \"comment\": \"{{comment}}\",\n    \"registerDate\": \"{{registerDate2}}\",\n    \"likes\": 689,\n    \"visible\": true,\n    \"eventId\": 1,\n    \"userId\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews/{{reviewId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"{{reviewId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code is 204\", () => {",
+									"    pm.expect(pm.response.code).to.eql(204);",
+									"});",
+									"",
+									"pm.test(\"response body is empty\", () => {",
+									"    pm.expect(pm.response.text()).to.eql(\"\");",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews/{{reviewId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"{{reviewId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -3405,6 +3622,22 @@
 		{
 			"key": "price6",
 			"value": "30"
+		},
+		{
+			"key": "rate1",
+			"value": "4"
+		},
+		{
+			"key": "reviewId",
+			"value": ""
+		},
+		{
+			"key": "rate2",
+			"value": "2"
+		},
+		{
+			"key": "comment",
+			"value": "No me ha gustado nada"
 		}
 	]
 }
