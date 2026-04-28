@@ -3249,6 +3249,189 @@
 					"response": []
 				},
 				{
+					"name": "/reviews(400)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 400\", () => {",
+									"    pm.expect(pm.response.code).to.eql(400);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(400);",
+									"    pm.expect(jsonResponse.title).eql(\"bad-request\");",
+									"    pm.expect(jsonResponse.message).eql(\"Validation error\")",
+									"    pm.expect(jsonResponse.errors.rate).eql(\"The rate must be at least 1\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"recommend\": true,\n    \"comment\": \"{{$randomPhrase}}\",\n    \"registerDate\": \"{{registerDate1}}\",\n    \"eventId\": 3,\n    \"userId\": 2\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 201\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"rate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"comment\");",
+									"    pm.expect(jsonResponse).to.have.property(\"registerDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"event\");",
+									"    pm.expect(jsonResponse).to.have.property(\"user\");",
+									"    pm.expect(jsonResponse).to.have.property(\"likes\");",
+									"    pm.expect(jsonResponse).to.have.property(\"visible\");",
+									"",
+									"    pm.expect(jsonResponse.id).to.be.a('number');",
+									"    pm.expect(jsonResponse.rate).to.be.a('number');",
+									"    pm.expect(jsonResponse.comment).to.be.a('string');",
+									"    pm.expect(jsonResponse.registerDate).to.be.a('string');",
+									"    pm.expect(jsonResponse.visible).to.be.a('boolean');",
+									"    pm.expect(jsonResponse.likes).to.be.a('number');",
+									"});",
+									"",
+									"pm.collectionVariables.set(\"reviewId\", jsonResponse.id); "
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"recommend\": false,\n    \"rate\": {{rate2}},\n    \"comment\": \"{{comment}}\",\n    \"registerDate\": \"{{registerDate2}}\",\n    \"eventId\": 1,\n    \"userId\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews/:id (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 404\", () => {",
+									"    pm.expect(pm.response.code).to.eql(404);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(404);",
+									"    pm.expect(jsonResponse.title).eql(\"not-found\");",
+									"    pm.expect(jsonResponse.message).eql(\"The review does not exist\")",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"recommend\": false,\n    \"rate\": {{rate2}},\n    \"comment\": \"{{comment}}\",\n    \"registerDate\": \"{{registerDate2}}\",\n    \"likes\": 689,\n    \"visible\": true,\n    \"eventId\": 1,\n    \"userId\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews/10",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/reviews",
 					"event": [
 						{
@@ -3356,6 +3539,171 @@
 					"response": []
 				},
 				{
+					"name": "/reviews?username=:username",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(1);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].rate).to.equal(4);",
+									"    pm.expect(jsonResponse[0].recommend).to.equal(true);",
+									"})",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews?username=joaquin123",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "joaquin123"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews?eventName=:eventName",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(1);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].rate).to.equal(2);",
+									"    pm.expect(jsonResponse[0].recommend).to.equal(false);",
+									"})",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews?eventName=Concierto de Extremoduro",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "eventName",
+									"value": "Concierto de Extremoduro"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"id\");",
+									"    pm.expect(jsonResponse).to.have.property(\"rate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"comment\");",
+									"    pm.expect(jsonResponse).to.have.property(\"visible\");",
+									"    pm.expect(jsonResponse).to.have.property(\"registerDate\");",
+									"    pm.expect(jsonResponse).to.have.property(\"likes\");",
+									"    pm.expect(jsonResponse).to.have.property(\"recommend\");",
+									"    pm.expect(jsonResponse).to.have.property(\"event\");",
+									"    pm.expect(jsonResponse).to.have.property(\"user\");",
+									"});",
+									"",
+									"pm.test(\"id is a number\", () => {",
+									"    pm.expect(pm.response.json().id).eql(2);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(pm.response.json().rate).to.eql(2);",
+									"    pm.expect(pm.response.json().event.id).to.eql(1);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews/{{reviewId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"{{reviewId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/reviews/:id",
 					"event": [
 						{
@@ -3370,6 +3718,109 @@
 									"    pm.expect(pm.response.text()).to.eql(\"\");",
 									"});",
 									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews/{{reviewId}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"{{reviewId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews?rate=:rate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code si 200\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200);",
+									"});",
+									"",
+									"pm.test(\"response has one item\", () => {",
+									"    pm.expect(pm.response.json()).to.have.length(1);",
+									"});",
+									"",
+									"pm.test(\"data is ok\", () => {",
+									"    pm.expect(jsonResponse[0].rate).to.equal(4);",
+									"    pm.expect(jsonResponse[0].recommend).to.equal(true);",
+									"})",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/reviews?rate=3.5",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "rate",
+									"value": "3.5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/reviews/:id (404)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonResponse = pm.response.json();",
+									"",
+									"pm.test(\"status code is 404\", () => {",
+									"    pm.expect(pm.response.code).to.eql(404);",
+									"});",
+									"",
+									"pm.test(\"response structure is ok\", () => {",
+									"    pm.expect(jsonResponse).to.have.property(\"code\");",
+									"    pm.expect(jsonResponse).to.have.property(\"title\");",
+									"    pm.expect(jsonResponse).to.have.property(\"message\");",
+									"    pm.expect(jsonResponse).to.have.property(\"errors\");",
+									"});",
+									"",
+									"pm.test(\"errors message is ok\", () => {",
+									"    pm.expect(jsonResponse.code).eql(404);",
+									"    pm.expect(jsonResponse.title).eql(\"not-found\");",
+									"    pm.expect(jsonResponse.message).eql(\"The review does not exist\")",
+									"});"
 								],
 								"type": "text/javascript",
 								"packages": {},
