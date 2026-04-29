@@ -60,7 +60,7 @@ public class ReviewControllerTests {
 
         when(reviewService.findAll(null,null,null)).thenReturn(reviewsOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/reviews")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/reviews")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
                         .andReturn();
@@ -81,7 +81,7 @@ public class ReviewControllerTests {
 
         when(reviewService.findAll(null,null,3f)).thenReturn(reviewsOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/reviews")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/reviews")
                         .queryParam("rate", "3.0")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
@@ -103,7 +103,7 @@ public class ReviewControllerTests {
 
         when(reviewService.findAll("pedro123",null,null)).thenReturn(reviewsOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/reviews")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/reviews")
                         .queryParam("username", "pedro123")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
@@ -125,7 +125,7 @@ public class ReviewControllerTests {
 
         when(reviewService.findAll(null,"Conicerto Kase.O",null)).thenReturn(reviewsOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/reviews")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/reviews")
                         .queryParam("eventName", "Conicerto Kase.O")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
@@ -145,7 +145,7 @@ public class ReviewControllerTests {
 
         when(reviewService.getReviewById(2L)).thenReturn(review);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/reviews/2")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/reviews/2")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
                         .andReturn();
@@ -161,7 +161,7 @@ public class ReviewControllerTests {
     public void testGetReviewtByIdNotFound() throws Exception {
         when(reviewService.getReviewById(99L)).thenThrow(new ReviewNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/reviews/99")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/reviews/99")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isNotFound())
                         .andReturn();
@@ -186,7 +186,7 @@ public class ReviewControllerTests {
         when(userService.findUserById(5)).thenReturn(user);
         when(reviewService.add(reviewInDto, event, user)).thenReturn(newReview);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/reviews")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/reviews")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reviewInDto)))
@@ -202,7 +202,7 @@ public class ReviewControllerTests {
     public void testAddReviewValidationError400() throws Exception {
         ReviewInDto notValidReview = new ReviewInDto();
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/reviews")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/reviews")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(notValidReview)))
@@ -222,7 +222,7 @@ public class ReviewControllerTests {
 
         when(eventService.findById(1L)).thenThrow(new EventNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/reviews")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/reviews")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reviewInDto)))
@@ -244,7 +244,7 @@ public class ReviewControllerTests {
         when(eventService.findById(1L)).thenReturn(event);
         when(userService.findUserById(5L)).thenThrow(new UserNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/reviews")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/reviews")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reviewInDto)))
@@ -264,14 +264,19 @@ public class ReviewControllerTests {
 
         ReviewModifyInDto reviewRequest = new ReviewModifyInDto();
         reviewRequest.setRate(3.2f);
+        reviewRequest.setUserId(5L);
+        reviewRequest.setEventId(1L);
 
         Review reviewResponse = new Review();
         reviewResponse.setId(15L);
         reviewResponse.setRate(4.0f);
 
+        when(userService.findUserById(anyLong())).thenReturn(user);
+        when(eventService.findById(anyLong())).thenReturn(event);
+
         when(reviewService.modify(eq(15L), any(ReviewModifyInDto.class), any(User.class), any(Event.class))).thenReturn(reviewResponse);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/reviews/15")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/reviews/15")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(reviewRequest)))
@@ -279,7 +284,7 @@ public class ReviewControllerTests {
                         .andReturn();
 
         String jsonResponse = result.getResponse().getContentAsString();
-        Review response = objectMapper.readValue(jsonResponse, new TypeReference<>() {});
+        Review response = objectMapper.readValue(jsonResponse, Review.class);
 
         assertEquals(4.0f, response.getRate());
         verify(reviewService, times(1)).modify(eq(15L),any(ReviewModifyInDto.class), any(User.class) ,any(Event.class));
@@ -289,10 +294,15 @@ public class ReviewControllerTests {
     public void testModifyReviewNotFound() throws Exception {
         ReviewModifyInDto reviewRequest = new ReviewModifyInDto();
         reviewRequest.setRate(3.8f);
+        reviewRequest.setUserId(5L);
+        reviewRequest.setEventId(1L);
+
+        when(userService.findUserById(anyLong())).thenReturn(new User());
+        when(eventService.findById(anyLong())).thenReturn(new Event());
 
         when(reviewService.modify(eq(15L), any(ReviewModifyInDto.class), any(User.class), any(Event.class))).thenThrow(new ReviewNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/reviews/15")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/reviews/15")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(reviewRequest)))
@@ -305,7 +315,7 @@ public class ReviewControllerTests {
     public void testDeleteReview() throws Exception {
         doNothing().when(reviewService).delete(17L);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/reviews/17"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/reviews/17"))
                 .andExpect(status().isNoContent());
 
         verify(reviewService, times(1)).delete(17L);
@@ -316,7 +326,7 @@ public class ReviewControllerTests {
 
         doThrow(new ReviewNotFoundException()).when(reviewService).delete(17L);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/reviews/17"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/reviews/17"))
                 .andExpect(status().isNotFound());
 
         verify(reviewService, times(1)).delete(17L);

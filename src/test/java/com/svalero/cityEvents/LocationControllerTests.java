@@ -57,7 +57,7 @@ public class LocationControllerTests {
 
         when(locationService.findAll(null,null,null)).thenReturn(locationOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/locations")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/locations")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
                         .andReturn();
@@ -77,7 +77,7 @@ public class LocationControllerTests {
 
         when(locationService.findAll("Estadio",null,null)).thenReturn(locationsOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/locations")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/locations")
                         .queryParam("category", "Estadio")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
@@ -99,7 +99,7 @@ public class LocationControllerTests {
 
         when(locationService.findAll(null,null,50001)).thenReturn(locationsOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/locations")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/locations")
                         .queryParam("postalCode", "50001")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
@@ -122,7 +122,7 @@ public class LocationControllerTests {
 
         when(locationService.findAll(null,true,null)).thenReturn(locationsOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/locations")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/locations")
                         .queryParam("disabledAccess", "true")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
@@ -142,7 +142,7 @@ public class LocationControllerTests {
 
         when(locationService.findById(3L)).thenReturn(location);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/locations/3")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/locations/3")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
                         .andReturn();
@@ -158,7 +158,7 @@ public class LocationControllerTests {
     public void testGetLocationByIdNotFound() throws Exception {
         when(locationService.findById(99L)).thenThrow(new LocationNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/locations/99")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/locations/99")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isNotFound())
                         .andReturn();
@@ -176,7 +176,7 @@ public class LocationControllerTests {
 
         when(locationService.add(location)).thenReturn(newLocation);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/locations")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/locations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(location)))
@@ -190,7 +190,7 @@ public class LocationControllerTests {
     public void testAddLocationValidationError400() throws Exception {
         Location notValidLocation = new Location();
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/locations")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/locations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(notValidLocation)))
@@ -211,7 +211,7 @@ public class LocationControllerTests {
 
         when(locationService.modify(eq(1L), any(Location.class))).thenReturn(locationResponse);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/locations/1")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/locations/1")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(locationRequest)))
@@ -233,7 +233,7 @@ public class LocationControllerTests {
 
         when(locationService.modify(eq(10L), any(Location.class))).thenThrow(new LocationNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/locations/10")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/locations/10")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(locationRequest)))
@@ -246,7 +246,7 @@ public class LocationControllerTests {
     public void testDeleteLocation() throws Exception {
         doNothing().when(locationService).delete(5L);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/locations/5"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/locations/5"))
                 .andExpect(status().isNoContent());
 
         verify(locationService, times(1)).delete(5L);
@@ -257,7 +257,7 @@ public class LocationControllerTests {
 
         doThrow(new LocationNotFoundException()).when(locationService).delete(5L);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/locations/5"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/locations/5"))
                 .andExpect(status().isNotFound());
 
         verify(locationService, times(1)).delete(5L);
