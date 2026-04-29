@@ -54,7 +54,7 @@ public class UserControllerTests {
 
         when(userService.findAll(null,null,null)).thenReturn(userOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/usuarios")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/usuarios")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
                         .andReturn();
@@ -74,7 +74,7 @@ public class UserControllerTests {
 
         when(userService.findAll("Mónica",null,null)).thenReturn(usersOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/usuarios")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/usuarios")
                         .queryParam("name", "Mónica")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
@@ -96,7 +96,7 @@ public class UserControllerTests {
 
         when(userService.findAll(null,LocalDate.of(2000,1,1),null)).thenReturn(usersOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/usuarios")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/usuarios")
                         .queryParam("date", "2000-01-01")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
@@ -118,7 +118,7 @@ public class UserControllerTests {
 
         when(userService.findAll(null,null,true)).thenReturn(usersOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/usuarios")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/usuarios")
                         .queryParam("active", "true")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
@@ -138,7 +138,7 @@ public class UserControllerTests {
 
         when(userService.findUserById(2L)).thenReturn(user);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/usuarios/2")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/usuarios/2")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
                         .andReturn();
@@ -154,7 +154,7 @@ public class UserControllerTests {
     public void testGetUserByIdNotFound() throws Exception {
         when(userService.findUserById(47L)).thenThrow(new UserNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/usuarios/47")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/usuarios/47")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isNotFound())
                         .andReturn();
@@ -171,7 +171,7 @@ public class UserControllerTests {
 
         when(userService.add(userInDto)).thenReturn(newUser);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/usuarios")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/usuarios")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userInDto)))
@@ -185,7 +185,7 @@ public class UserControllerTests {
     public void testAddUserValidationError400() throws Exception {
         User notValidUser = new User();
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/usuarios")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/usuarios")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(notValidUser)))
@@ -206,7 +206,7 @@ public class UserControllerTests {
 
         when(userService.modify(eq(35L), any(User.class))).thenReturn(userResponse);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/usuarios/35")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/usuarios/35")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(userRequest)))
@@ -228,7 +228,7 @@ public class UserControllerTests {
 
         when(userService.modify(eq(35L), any(User.class))).thenThrow(new UserNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/usuarios/35")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/usuarios/35")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(userRequest)))
@@ -241,7 +241,7 @@ public class UserControllerTests {
     public void testDeleteUser() throws Exception {
         doNothing().when(userService).delete(37L);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/usuarios/37"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/usuarios/37"))
                 .andExpect(status().isNoContent());
 
         verify(userService, times(1)).delete(37L);
@@ -252,7 +252,7 @@ public class UserControllerTests {
 
         doThrow(new UserNotFoundException()).when(userService).delete(2L);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/usuarios/2"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/usuarios/2"))
                 .andExpect(status().isNotFound());
 
         verify(userService, times(1)).delete(2L);

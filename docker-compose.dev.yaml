@@ -4,10 +4,10 @@ services:
     image: mariadb:11.3.2
     container_name: cityEvents2-db
     environment:
-      MARIADB_DATABASE: cityEvents2_database
-      MARIADB_USER: cityEvents2_user
-      MARIADB_PASSWORD: cityEvents2_password
-      MARIADB_ROOT_PASSWORD: rootpassword
+      MARIADB_DATABASE: $MYSQL_DATABASE
+      MARIADB_USER: $MYSQL_USER
+      MARIADB_PASSWORD: $MYSQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
     ports:
       - "3307:3306"
 

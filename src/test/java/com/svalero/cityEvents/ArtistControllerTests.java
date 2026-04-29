@@ -55,7 +55,7 @@ public class ArtistControllerTests {
 
         when(artistService.findAll(null,null,null)).thenReturn(artistOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/artists")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/artists")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
                         .andReturn();
@@ -75,7 +75,7 @@ public class ArtistControllerTests {
 
         when(artistService.findAll("Deportista",null,null)).thenReturn(artistsOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/artists")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/artists")
                         .queryParam("type", "Deportista")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
@@ -97,7 +97,7 @@ public class ArtistControllerTests {
 
         when(artistService.findAll(null,true,null)).thenReturn(artistsOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/artists")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/artists")
                         .queryParam("active", "true")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
@@ -121,7 +121,7 @@ public class ArtistControllerTests {
 
         when(artistService.findAll(null,null,true)).thenReturn(artistsOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/artists")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/artists")
                         .queryParam("orderByFollowers", "true")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
@@ -144,7 +144,7 @@ public class ArtistControllerTests {
 
         when(artistService.add(artist)).thenReturn(newArtist);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/artists")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/artists")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(artist)))
@@ -158,7 +158,7 @@ public class ArtistControllerTests {
     public void testAddArtistValidationError400() throws Exception {
         Artist notValidArtist = new Artist();
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/artists")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/artists")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(notValidArtist)))
@@ -176,7 +176,7 @@ public class ArtistControllerTests {
 
         when(artistService.findArtistById(2L)).thenReturn(artist);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/artists/2")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/artists/2")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
                         .andReturn();
@@ -192,7 +192,7 @@ public class ArtistControllerTests {
     public void testGetArtistByIdNotFound() throws Exception {
         when(artistService.findArtistById(99L)).thenThrow(new ArtistNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/artists/99")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/artists/99")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isNotFound())
                         .andReturn();
@@ -211,7 +211,7 @@ public class ArtistControllerTests {
 
         when(artistService.modify(eq(1L), any(Artist.class))).thenReturn(artistResponse);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/artists/1")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/artists/1")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(artistRequest)))
@@ -233,7 +233,7 @@ public class ArtistControllerTests {
 
         when(artistService.modify(eq(2L), any(Artist.class))).thenThrow(new ArtistNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/artists/2")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/artists/2")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(artistRequest)))
@@ -246,7 +246,7 @@ public class ArtistControllerTests {
     public void testDeleteArtist() throws Exception {
         doNothing().when(artistService).delete(1L);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/artists/1"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/artists/1"))
                 .andExpect(status().isNoContent());
 
         verify(artistService, times(1)).delete(1L);
@@ -257,7 +257,7 @@ public class ArtistControllerTests {
 
         doThrow(new ArtistNotFoundException()).when(artistService).delete(2L);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/artists/2"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/artists/2"))
                 .andExpect(status().isNotFound());
 
         verify(artistService, times(1)).delete(2L);

@@ -66,7 +66,7 @@ public class EventControllerTests {
 
         when(eventService.findAll(null,null,null)).thenReturn(eventsOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/events")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/events")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -87,7 +87,7 @@ public class EventControllerTests {
 
         when(eventService.findAll("Evento",null,null)).thenReturn(eventsOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/events")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/events")
                         .queryParam("category", "Evento")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -109,7 +109,7 @@ public class EventControllerTests {
 
         when(eventService.findAll(null,null,30f)).thenReturn(eventsOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/events")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/events")
                         .queryParam("price", "30f")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -131,7 +131,7 @@ public class EventControllerTests {
 
         when(eventService.findAll(null,"Plaza del Pilar",null)).thenReturn(eventsOutDto);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/events")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/events")
                         .queryParam("locationName", "Plaza del Pilar")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -166,7 +166,7 @@ public class EventControllerTests {
         when(artistService.findAllArtistsById(List.of(1L,2L))).thenReturn(artists);
         when(eventService.add(location,eventInDto,artists)).thenReturn(newEvent);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/events")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/events")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(eventInDto)))
@@ -182,7 +182,7 @@ public class EventControllerTests {
     public void testAddEventValidationError400() throws Exception {
         EventInDto notValidEvent = new EventInDto();
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/events")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/events")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(notValidEvent)))
@@ -202,7 +202,7 @@ public class EventControllerTests {
 
         when(locationService.findById(99L)).thenThrow(new LocationNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/events")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/events")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(eventInDto)))
@@ -221,7 +221,7 @@ public class EventControllerTests {
 
         when(eventService.findById(2L)).thenReturn(event);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/events/2")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/events/2")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk())
                         .andReturn();
@@ -237,7 +237,7 @@ public class EventControllerTests {
     public void testGetEventByIdNotFound() throws Exception {
         when(eventService.findById(99L)).thenThrow(new EventNotFoundException());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/events/99")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/events/99")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isNotFound())
                         .andReturn();
@@ -247,8 +247,8 @@ public class EventControllerTests {
 
     @Test
     public void testModifyEvent() throws Exception {
-        Event eventRequest = new Event();
-        eventRequest.setName("Evento");
+        EventModifyInDto eventRequest = new EventModifyInDto("Evento", "Descripción", LocalDate.now(),
+                "Categoría", 100, 10.0f, true, 1L, List.of(1L));
 
         Location locationRequest = new Location();
         List<Artist> artistsRequest = new ArrayList<>();
@@ -262,7 +262,7 @@ public class EventControllerTests {
         when(artistService.findAllArtistsById(anyList())).thenReturn(artistsRequest);
         when(eventService.modify(eq(1L), any(EventModifyInDto.class), eq(locationRequest), eq(artistsRequest))).thenReturn(eventResponse);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/events/1")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/events/1")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(eventRequest)))
@@ -282,32 +282,26 @@ public class EventControllerTests {
         EventModifyInDto modifyDto = new EventModifyInDto("Concierto", "Desc", LocalDate.now(),
                 "Música", 100, 20.0f, true, 1L, List.of(1L));
 
-        Location mockLocation = new Location();
-        List<Artist> mockArtists = new ArrayList<>();
+        when(locationService.findById(anyLong())).thenReturn(new Location());
+        when(artistService.findAllArtistsById(anyList())).thenReturn(new ArrayList<>());
 
-        Event eventRequest = new Event();
-        eventRequest.setName("Evento inexistente");
+        when(eventService.modify(eq(5L), any(), any(), any()))
+                .thenThrow(new EventNotFoundException());
 
-
-        when(locationService.findById(2L)).thenReturn(mockLocation);
-        when(artistService.findAllArtistsById(anyList())).thenReturn(mockArtists);
-
-        when(eventService.modify(eq(2L), any(EventModifyInDto.class), eq(mockLocation), eq(mockArtists))).thenThrow(new EventNotFoundException());
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/events/2")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .accept(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(eventRequest)))
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/events/5")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(modifyDto)))
                         .andExpect(status().isNotFound());
 
-        verify(eventService, times(1)).modify(eq(2L), any(EventModifyInDto.class), eq(mockLocation), eq(mockArtists));
+        verify(eventService, times(1)).modify(eq(5L), any(), any(), any());
     }
 
     @Test
     public void testDeleteEvent() throws Exception {
         doNothing().when(eventService).delete(1L);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/events/1"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/events/1"))
                         .andExpect(status().isNoContent());
 
         verify(eventService, times(1)).delete(1L);
@@ -318,7 +312,7 @@ public class EventControllerTests {
 
         doThrow(new EventNotFoundException()).when(eventService).delete(2L);
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/events/2"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/events/2"))
                         .andExpect(status().isNotFound());
 
         verify(eventService, times(1)).delete(2L);

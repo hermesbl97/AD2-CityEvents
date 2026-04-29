@@ -21,3 +21,6 @@ http://localhost:8082/apimanui/
 
 # Para entrar al portal de APiman en local
 http://apiman.local.gd:8082/portal/home
+
+# Para lanzar la API entorno local
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
