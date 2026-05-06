@@ -1,3 +1,6 @@
+# Desplegada en AWS
+http://ec2-54-81-166-106.compute-1.amazonaws.com:8089
+
 # Para lanzar newman en local:
 newman run -e pruebas.postman_environment.json cityEvents2.postman_collection.json
 
